@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.specify/scripts/bash/create-phr.sh *)",
+      "Bash(python -m venv venv)",
+      "Bash(./venv/Scripts/pip install *)",
+      "Bash(npx create-expo-app@latest . --template blank-typescript)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git rebase *)"
+    ]
+  }
+}
