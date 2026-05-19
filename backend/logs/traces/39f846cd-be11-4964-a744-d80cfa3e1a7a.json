@@ -1,0 +1,44 @@
+{
+  "session_id": "39f846cd-be11-4964-a744-d80cfa3e1a7a",
+  "timestamp": "2026-05-18T22:30:33.140146",
+  "user_id": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+  "user_message": "aaj ki earnings",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Extract Intent",
+      "Query Data"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Intent Extraction",
+      "tool_called": "gemini_parse",
+      "input": "aaj ki earnings",
+      "output": {
+        "intent_type": "check_earnings",
+        "service_type": "Karoo",
+        "area": "Pakistan",
+        "time_filter": "today",
+        "confidence": 0.95
+      },
+      "status": "SUCCESS",
+      "time_ms": 500
+    },
+    {
+      "name": "Calculate Earnings",
+      "tool_called": "supabase_query",
+      "input": {
+        "provider_id": "89f6f493-1685-48e9-ad87-ab915b772b20"
+      },
+      "output": "PKR 0 from 0 jobs",
+      "status": "SUCCESS",
+      "time_ms": 150
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 2768,
+    "outcome": "SUCCESS"
+  }
+}

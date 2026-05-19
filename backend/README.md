@@ -517,12 +517,14 @@ Verify auto-created booking with `booked_via: "request"`
 - `POST /api/chat` - AI-powered service search
 - `GET /api/chat/history` - Get chat history
 
-### Bookings (5)
+### Bookings (7)
 - `POST /api/bookings` - Create booking
 - `GET /api/bookings/my` - Get my bookings
-- `PUT /api/bookings/{id}/accept` - Accept booking
-- `PUT /api/bookings/{id}/reject` - Reject booking
+- `PUT /api/bookings/{id}/accept` - Accept booking (auto-creates conversation)
+- `PUT /api/bookings/{id}/cancel` - Cancel booking (user)
+- `PUT /api/bookings/{id}/reject` - Reject booking (provider)
 - `PUT /api/bookings/{id}/complete` - Complete booking
+- `GET /api/bookings/earnings` - Get provider earnings
 
 ### Ratings (4)
 - `POST /api/ratings` - Submit rating
@@ -541,11 +543,18 @@ Verify auto-created booking with `booked_via: "request"`
 - `PUT /api/requests/{id}/accept` - Accept request
 - `GET /api/requests/my` - Get my requests
 
+### Conversations/Messaging (5)
+- `POST /api/conversations` - Create conversation for booking
+- `GET /api/conversations` - Get my conversations
+- `GET /api/conversations/{id}/messages` - Get messages (auto-marks as read)
+- `POST /api/conversations/{id}/messages` - Send message
+- `WS /api/conversations/ws/{user_id}` - WebSocket real-time messaging
+
 ---
 
 ## 🔍 Verification Checklist
 
-- [ ] All 26 endpoints return expected responses
+- [ ] All 36 endpoints return expected responses
 - [ ] JWT authentication working for all protected routes
 - [ ] Role-based access control (user vs provider) enforced
 - [ ] AI intent extraction working (Urdu/English)
@@ -588,7 +597,20 @@ Verify auto-created booking with `booked_via: "request"`
 ---
 
 **Backend Status:** ✅ Production Ready  
-**Total Endpoints:** 26  
-**Database Tables:** 8  
+**Total Endpoints:** 36 (31 REST + 1 WebSocket + 4 new messaging)  
+**Database Tables:** 10 (8 original + 2 messaging)  
 **AI Integration:** OpenRouter (GPT-3.5-turbo)  
-**Maps Integration:** Google Maps (Geocoding + Routes API)
+**Maps Integration:** Google Maps (Geocoding + Routes API)  
+**Real-Time Messaging:** WebSocket support for instant delivery
+
+## 🆕 New Features Added
+
+### Peer-to-Peer Messaging System
+- Real-time chat between users and providers
+- Auto-created when provider accepts booking
+- Unread message counters
+- Read receipts (auto-mark as read)
+- WebSocket push notifications
+- Conversation history with last message preview
+
+See **MESSAGING_GUIDE.md** for complete documentation and testing instructions.

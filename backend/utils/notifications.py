@@ -54,3 +54,23 @@ async def notify_booking_completed(booking_id, user_id, provider_user_id, user_n
         "Job Complete",
         f"{user_name} ki service complete ho gayi. Rate the customer.",
         "booking_completed", booking_id)
+
+async def notify_booking_cancelled_by_user(booking_id, user_id, provider_user_id, user_name, service_type):
+    await create_notification(user_id,
+        "Booking Cancel Ho Gayi 🚫",
+        f"Tumne apni {service_type} booking cancel kar di",
+        "booking_cancelled", booking_id)
+    await create_notification(provider_user_id,
+        "Booking Cancel Ho Gayi ❌",
+        f"{user_name} ne {service_type} booking cancel kar di",
+        "booking_cancelled", booking_id)
+
+async def notify_booking_cancelled_by_provider(booking_id, user_id, provider_user_id, provider_name, service_type):
+    await create_notification(user_id,
+        "Provider Ne Cancel Kiya ❌",
+        f"{provider_name} ne tumhari {service_type} booking cancel kar di. Doosra provider choose karo.",
+        "booking_cancelled", booking_id)
+    await create_notification(provider_user_id,
+        "Booking Cancel Ki 🚫",
+        f"Tumne {service_type} booking cancel kar di",
+        "booking_cancelled", booking_id)

@@ -76,3 +76,71 @@ async def extract_intent(message: str) -> dict:
     except Exception as e:
         print(f"[INTENT AGENT] Error: {e}")
         return {"service_type": None, "location": None, "time": None, "confidence": 0.0}
+
+PROVIDER_INTENT_PROMPT = """
+You are an AI assistant for Karoo service providers in Pakistan.
+Extract intent from provider message (Urdu/Roman Urdu/English):
+- intent_type: find_requests | check_bookings | check_earnings | other
+- service_type: if mentioned (else use provider's own service)
+- area: location if mentioned
+- time_filter: today | tomorrow | this_week | null
+- confidence: 0.0 to 1.0
+
+Provider's service: {provider_service}
+Provider's area: {provider_area}
+Message: {message}
+
+Return ONLY valid JSON:
+{{"intent_type": "...", "service_type": "...", "area": "...", "time_filter": "...", "confidence": 0.95}}
+"""
+
+async def extract_provider_intent(message: str, provider_service: str, provider_area: str) -> dict:
+    """
+    Extract provider intent from message using OpenRouter API.
+    Returns dict with intent_type, service_type, area, time_filter, confidence.
+    """
+    try:
+        prompt = PROVIDER_INTENT_PROMPT.format(
+            provider_service=provider_service,
+            provider_area=provider_area,
+            message=message
+        )
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "HTTP-Referer": "http://localhost:8000",
+                    "X-Title": "Karoo App",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "openai/gpt-3.5-turbo",
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.3
+                },
+                timeout=30.0
+            )
+
+            response.raise_for_status()
+            data = response.json()
+            text = data["choices"][0]["message"]["content"].strip()
+
+        if text.startswith("```"):
+            text = text.split("```")[1]
+            if text.startswith("json"):
+                text = text[4:]
+
+        result = json.loads(text.strip())
+        print(f"[PROVIDER INTENT] Input: '{message}' -> Output: {result}")
+        return result
+
+    except json.JSONDecodeError:
+        print(f"[PROVIDER INTENT] JSON parse failed, returning low confidence")
+        return {"intent_type": None, "service_type": None, "area": None, "time_filter": None, "confidence": 0.0}
+    except Exception as e:
+        print(f"[PROVIDER INTENT] Error: {e}")
+        return {"intent_type": None, "service_type": None, "area": None, "time_filter": None, "confidence": 0.0}

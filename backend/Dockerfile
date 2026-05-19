@@ -1,20 +1,20 @@
-# Use official Python runtime as a parent image
+# Read the doc: https://huggingface.co/docs/hub/spaces-sdks-docker
 FROM python:3.11-slim
 
-# Set the working directory in the container
+# Hugging Face requires running as a non-root user
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
+
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
+# Copy requirements and install
+COPY --chown=user ./requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the rest of the application
+COPY --chown=user . /app
 
-# Copy the rest of the application code
-COPY . .
-
-# Expose the port the app runs on
-EXPOSE 10000
-
-# Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Hugging Face Spaces must listen on port 7860
+EXPOSE 7860
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]

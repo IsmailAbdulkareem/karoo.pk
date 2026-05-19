@@ -1,0 +1,62 @@
+{
+  "session_id": "39337209-5521-4e8b-9455-b996e19849d8",
+  "timestamp": "2026-05-19T17:02:14.544697",
+  "user_id": "4c20cfc0-3357-4ef8-bf98-739108af6e45",
+  "user_message": "Mujhe electrician chahiye G-11 mein urgent",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "4c20cfc0-3357-4ef8-bf98-739108af6e45",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Islamabad mein"
+        },
+        {
+          "role": "assistant",
+          "content": "Islamabad mein 3 plumber available hain"
+        }
+      ],
+      "output": {
+        "service_type": "plumber",
+        "location": "Islamabad"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "Mujhe electrician chahiye G-11 mein urgent",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 997,
+    "outcome": "SUCCESS"
+  }
+}

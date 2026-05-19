@@ -1,0 +1,45 @@
+{
+  "session_id": "d5992f89-d961-42ef-8768-c4994b4b6185",
+  "timestamp": "2026-05-17T05:46:52.779276",
+  "user_id": "d7ee35c0-9f53-42e3-aa94-2f18c61fe8b3",
+  "user_message": "Mujhe open jobs dikhao electrician ke liye",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Extract Intent",
+      "Query Data"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Intent Extraction",
+      "tool_called": "gemini_parse",
+      "input": "Mujhe open jobs dikhao electrician ke liye",
+      "output": {
+        "intent_type": "find_requests",
+        "service_type": "electrician",
+        "area": "Islamabad",
+        "time_filter": null,
+        "confidence": 0.95
+      },
+      "status": "SUCCESS",
+      "time_ms": 500
+    },
+    {
+      "name": "Query Service Requests",
+      "tool_called": "supabase_query",
+      "input": {
+        "service": "electrician",
+        "area": "Islamabad"
+      },
+      "output": "Found 0 requests",
+      "status": "SUCCESS",
+      "time_ms": 200
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 2853,
+    "outcome": "SUCCESS"
+  }
+}

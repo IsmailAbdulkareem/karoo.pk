@@ -1,0 +1,42 @@
+{
+  "session_id": "9a387ecb-6dc2-4c3d-ac10-b723e7906aff",
+  "timestamp": "2026-05-19T04:17:38.393337",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "karachi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "karachi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Aap kaunsi service chahiye Karachi mein? Jaise plumber, electrician, AC technician?"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 1664,
+    "outcome": "SUCCESS"
+  }
+}

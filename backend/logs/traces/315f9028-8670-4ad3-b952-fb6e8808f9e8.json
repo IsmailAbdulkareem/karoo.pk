@@ -1,0 +1,42 @@
+{
+  "session_id": "315f9028-8670-4ad3-b952-fb6e8808f9e8",
+  "timestamp": "2026-05-19T04:18:11.859261",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "bataya tu he upper plumber ki",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "bataya tu he upper plumber ki",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Aap ki location kya hai? Jaise F-10, G-11, DHA?"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 1783,
+    "outcome": "SUCCESS"
+  }
+}

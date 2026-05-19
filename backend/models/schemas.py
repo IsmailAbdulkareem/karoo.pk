@@ -51,12 +51,30 @@ class ProviderResult(BaseModel):
     bio: Optional[str] = None
     eta_minutes: Optional[int] = None
     match_score: Optional[float] = None
+    estimated_price: Optional[int] = None
+    price_breakdown: Optional[str] = None
 
 class ChatResponse(BaseModel):
     reply: str
     intent: Optional[ParsedIntent] = None
     providers: List[ProviderResult] = []
     needs_clarification: bool = False
+    agent_trace: str = ""
+
+class ProviderChatRequest(BaseModel):
+    message: str
+
+class ProviderParsedIntent(BaseModel):
+    intent_type: Optional[str] = None
+    service_type: Optional[str] = None
+    area: Optional[str] = None
+    time_filter: Optional[str] = None
+    confidence: float = 0.0
+
+class ProviderChatResponse(BaseModel):
+    reply: str
+    intent: Optional[ProviderParsedIntent] = None
+    results: List[dict] = []
     agent_trace: str = ""
 
 # ============================================
@@ -70,9 +88,13 @@ class BookingCreate(BaseModel):
     scheduled_at: str
     note: Optional[str] = None
     booked_via: str = "browse"
+    budget: Optional[int] = None
+    agreed_rate: Optional[int] = None
     user_lat: Optional[float] = None
     user_lng: Optional[float] = None
     eta_minutes: Optional[int] = None
+    urgency: Optional[str] = "normal"
+    job_complexity: Optional[str] = "basic"
 
 class BookingStatusUpdate(BaseModel):
     status: str
@@ -130,3 +152,65 @@ class NotificationItem(BaseModel):
     type: str
     is_read: bool
     created_at: str
+
+# ============================================
+# DISPUTE MODELS
+# ============================================
+
+class DisputeCreate(BaseModel):
+    booking_id: str
+    dispute_type: str
+    description: str
+
+class DisputeResolve(BaseModel):
+    resolution: str
+    refund_amount: Optional[int] = 0
+    compensation_amount: Optional[int] = 0
+
+class DisputeResponse(BaseModel):
+    id: str
+    booking_id: str
+    raised_by: str
+    raised_by_role: str
+    dispute_type: str
+    description: str
+    status: str
+    resolution: Optional[str] = None
+    refund_amount: int
+    compensation_amount: int
+    created_at: str
+    resolved_at: Optional[str] = None
+
+# ============================================
+# MESSAGING MODELS
+# ============================================
+
+class ConversationCreate(BaseModel):
+    booking_id: str
+
+class MessageCreate(BaseModel):
+    message: str
+
+class MessageResponse(BaseModel):
+    id: str
+    conversation_id: str
+    sender_id: str
+    sender_role: str
+    message: str
+    is_read: bool
+    created_at: str
+
+class ConversationResponse(BaseModel):
+    id: str
+    booking_id: str
+    user_id: str
+    provider_id: str
+    last_message: Optional[str] = None
+    last_message_at: Optional[str] = None
+    user_unread_count: int = 0
+    provider_unread_count: int = 0
+    created_at: str
+    updated_at: str
+    # Include other party's info
+    other_party_name: Optional[str] = None
+    other_party_avatar: Optional[str] = None

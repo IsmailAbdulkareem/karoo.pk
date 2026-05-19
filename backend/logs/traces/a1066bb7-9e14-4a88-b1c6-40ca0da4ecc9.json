@@ -1,0 +1,42 @@
+{
+  "session_id": "a1066bb7-9e14-4a88-b1c6-40ca0da4ecc9",
+  "timestamp": "2026-05-19T08:13:27.752255",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Aap kaunsi service chahiye? Maslan: plumber, electrician, AC technician, tutor"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 4267,
+    "outcome": "SUCCESS"
+  }
+}

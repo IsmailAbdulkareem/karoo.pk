@@ -8,20 +8,14 @@ router = APIRouter()
 async def get_notifications(current_user: dict = Depends(get_current_user)):
     """
     Get notifications for current user.
-    Returns notifications list and unread count.
+    Returns notifications list directly.
     """
     try:
         # Get notifications
         result = supabase.table("notifications").select("*").eq("user_id", current_user["user_id"]).order("created_at", desc=True).limit(50).execute()
 
-        # Count unread
-        unread_result = supabase.table("notifications").select("id", count="exact").eq("user_id", current_user["user_id"]).eq("is_read", False).execute()
-        unread_count = unread_result.count if unread_result.count else 0
-
-        return {
-            "notifications": result.data,
-            "unread_count": unread_count
-        }
+        # Return just the array for frontend compatibility
+        return result.data or []
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")

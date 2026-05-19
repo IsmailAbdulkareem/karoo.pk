@@ -1,0 +1,53 @@
+{
+  "session_id": "11bc4dce-a360-41b0-9d12-4cbd5c3eafe9",
+  "timestamp": "2026-05-19T21:17:58.188307",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "hello",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "0 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [],
+      "output": {
+        "service_type": null,
+        "location": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hello",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hello! Kaise ho? \ud83d\ude0a Agar aap ko koi service ya koi specific location chahiye ho to bata dein, main madad kar doonga!"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 15831,
+    "outcome": "SUCCESS"
+  }
+}

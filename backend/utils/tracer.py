@@ -1,5 +1,6 @@
 import json
 import uuid
+import os
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
@@ -32,9 +33,26 @@ class AgentTrace:
         self.total_time_ms += time_ms
     
     def complete(self, outcome: str):
+        """Mark trace as complete and auto-save to logs/traces/"""
         self.outcome = outcome
-        elapsed = (datetime.utcnow() - self.start_time).total_seconds() * 1000
-        # optionally update total_time_ms with actual elapsed if desired
+        self.total_time_ms = int((datetime.utcnow() - self.start_time).total_seconds() * 1000)
+        self.save()
+
+    def save(self):
+        """Save trace as JSON file to logs/traces/{session_id}.json"""
+        try:
+            # Build path relative to this file's location (backend/utils/ → backend/logs/traces/)
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            traces_dir = os.path.join(base_dir, "logs", "traces")
+            os.makedirs(traces_dir, exist_ok=True)
+
+            file_path = os.path.join(traces_dir, f"{self.session_id}.json")
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(self.to_json())
+
+            print(f"[TRACER] Saved trace to {file_path}")
+        except Exception as e:
+            print(f"[TRACER] Warning: Could not save trace file: {e}")
 
     def to_json(self) -> str:
         return json.dumps({

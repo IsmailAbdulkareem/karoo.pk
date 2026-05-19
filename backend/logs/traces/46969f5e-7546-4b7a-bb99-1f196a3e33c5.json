@@ -1,0 +1,94 @@
+{
+  "session_id": "46969f5e-7546-4b7a-bb99-1f196a3e33c5",
+  "timestamp": "2026-05-19T20:14:59.533138",
+  "user_id": "c0930eca-ee1f-4fd2-8772-fe286c0558b4",
+  "user_message": "mujhe electrician chahiye G-11 mein",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "c0930eca-ee1f-4fd2-8772-fe286c0558b4",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye F-10 mein"
+        },
+        {
+          "role": "assistant",
+          "content": "Aap kaunsi service chahiye? Maslan: plumber, electrician, AC technician, tutor"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "assistant",
+          "content": "Rawalpindi mein 1 plumber available hain"
+        },
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Aap kaunsi service chahiye? Maslan: plumber, electrician, AC technician, tutor"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe electrician chahiye G-11 mein"
+        },
+        {
+          "role": "assistant",
+          "content": "G-11 mein 1 electrician available hain"
+        },
+        {
+          "role": "user",
+          "content": "mujhe plumber chahiye"
+        }
+      ],
+      "output": {
+        "service_type": "plumber",
+        "location": "G-11"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "mujhe electrician chahiye G-11 mein",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 13849,
+    "outcome": "SUCCESS"
+  }
+}
