@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native'
+import { router } from 'expo-router'
 import { authAPI } from '../../lib/api'
-import { auth } from '../../lib/auth'
 import { storage } from '../../lib/storage'
 
 export default function UserProfileScreen() {
@@ -29,14 +29,22 @@ export default function UserProfileScreen() {
   }
 
   const handleLogout = () => {
+    const doLogout = async () => {
+      try {
+        await storage.clearAll()
+        router.replace('/(auth)/login')
+      } catch (err) {
+        console.error('Logout error:', err)
+      }
+    }
     if (Platform.OS === 'web') {
       if (window.confirm('Kya aap logout karna chahte hain?')) {
-        auth.logout()
+        doLogout()
       }
     } else {
       Alert.alert('Logout', 'Kya aap logout karna chahte hain?', [
         { text: 'Nahi', style: 'cancel' },
-        { text: 'Haan', style: 'destructive', onPress: () => auth.logout() },
+        { text: 'Haan', style: 'destructive', onPress: doLogout },
       ])
     }
   }

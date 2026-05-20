@@ -1,0 +1,94 @@
+{
+  "session_id": "c1605c41-3813-46ac-a841-ccec52ab8817",
+  "timestamp": "2026-05-20T01:22:44.069745",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "\u2705 **Ali Plumber** ko aapke liye book kar diya gaya hai (F\u201111, Rawalpindi).  \n\n- **Rate:** Rs\u202f500 per hour  \n- **Rating:** \u26055.0  \n- **Available:** Kal (aap ne jo time bataya tha)\n\nAgar aapko koi specific time confirm karna hai ya koi extra instructions deni hain (jaise \u201csubah 10 baje\u201d ya \u201cpani ka leak\u201d), to batayein meine kaha tha book karo isko",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "\"Mujhe electrician chahiye G-11 mein kal\""
+        },
+        {
+          "role": "assistant",
+          "content": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+        },
+        {
+          "role": "user",
+          "content": "hi"
+        },
+        {
+          "role": "assistant",
+          "content": "Yeh rahe aapke liye kuch electricians jo G\u201111 ke aas\u2011pas available hain:\n\n| # | Naam | Area | Rating | Rate per hour |\n|---|------|------|--------|---------------|\n| 1 | Bilal Electrician | F\u201111 | \u26054.8 | Rs\u202f650 |\n| 2 | Ahmed Electrician | G\u201110 | \u26054.2 | Rs\u202f500 |\n| 3 | Danish Electrician | I\u20118 | \u26054.2 | Rs\u202f450 |\n\nAap in mein se koi choose karna chahenge? Ya phir koi specific time ya preference ho to bata dein!"
+        },
+        {
+          "role": "user",
+          "content": "hi"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! Kaise ho aap? Agar aapko koi service chahiye ya bas gupshup karna hai, batayein. \ud83d\ude0a"
+        },
+        {
+          "role": "user",
+          "content": "han mujhe f 11 mein plumber cheye \nkal"
+        },
+        {
+          "role": "assistant",
+          "content": "Bilkul! Yeh rahe F\u201111 ke area mein available plumbers:\n\n| # | Naam | Area | Rating | Rate per hour |\n|---|------|------|--------|---------------|\n| 1 | Ali Plumber | Rawalpindi (F\u201111) | \u26055.0 | Rs\u202f500 |\n| 2 | Umer Plumber | G\u201111 (nearby) | \u26054.4 | Rs\u202f600 |\n| 3 | Farhan Plumber | F\u201110 (nearby) | \u26054.3 | Rs\u202f550 |\n\nAap kisi ko book karna chahenge ya koi specific time confirm karna hai?\u202f\ud83d\udee0\ufe0f"
+        },
+        {
+          "role": "user",
+          "content": "1 wale ko book karo"
+        },
+        {
+          "role": "assistant",
+          "content": "\u2705 **Ali Plumber** ko aapke liye book kar diya gaya hai (F\u201111, Rawalpindi).  \n\n- **Rate:** Rs\u202f500 per hour  \n- **Rating:** \u26055.0  \n- **Available:** Kal (aap ne jo time bataya tha)\n\nAgar aapko koi specific time confirm karna hai ya koi extra instructions deni hain (jaise \u201csubah 10 baje\u201d ya \u201cpani ka leak\u201d), to batayein! \ud83d\ude4c"
+        }
+      ],
+      "output": {
+        "service_type": "plumber",
+        "location": "Rawalpindi"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "\u2705 **Ali Plumber** ko aapke liye book kar diya gaya hai (F\u201111, Rawalpindi).  \n\n- **Rate:** Rs\u202f500 per hour  \n- **Rating:** \u26055.0  \n- **Available:** Kal (aap ne jo time bataya tha)\n\nAgar aapko koi specific time confirm karna hai ya koi extra instructions deni hain (jaise \u201csubah 10 baje\u201d ya \u201cpani ka leak\u201d), to batayein meine kaha tha book karo isko",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Samajh gaya! \ud83c\udf89 Ali Plumber ko aapke liye kal book karna hai. Kripya specific time batayein (jaise\u202f\u201csubah\u202f10:00\u202fbaje\u201d ya \u201cdophar\u202f2:30\u202fpm\u201d). Taake hum booking confirm kar saken."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 8554,
+    "outcome": "SUCCESS"
+  }
+}

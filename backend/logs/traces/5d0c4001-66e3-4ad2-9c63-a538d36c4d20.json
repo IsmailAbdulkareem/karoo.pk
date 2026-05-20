@@ -1,0 +1,53 @@
+{
+  "session_id": "5d0c4001-66e3-4ad2-9c63-a538d36c4d20",
+  "timestamp": "2026-05-20T00:51:17.120618",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "\"Mujhe electrician chahiye G-11 mein kal\"",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "0 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots & Context",
+      "tool_called": "context_extractor",
+      "input": [],
+      "output": {
+        "service_type": null,
+        "location": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "\"Mujhe electrician chahiye G-11 mein kal\"",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 2604,
+    "outcome": "SUCCESS"
+  }
+}

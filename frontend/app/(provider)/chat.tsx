@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { chatAPI } from '../../lib/api'
 import MessageBubble from '../../components/MessageBubble'
-import BookingCard from '../../components/BookingCard'
+import { BookingCard } from '../../components/BookingCard'
 
 interface ProviderMessageProps {
   id: string
@@ -60,7 +60,7 @@ export default function ProviderChatScreen() {
 
     try {
       const res = await chatAPI.providerChat(userMessageText)
-      const { reply, intent, results = [], agent_trace } = res.data
+      const { reply, intent, results = [], agent_trace } = res
 
       const botMsg: ProviderMessageProps = {
         id: Math.random().toString(),
@@ -122,7 +122,7 @@ export default function ProviderChatScreen() {
         <View className="w-full mt-3 self-stretch">
           <Text className="text-gray-400 font-bold text-xs mb-2">Matching Bookings:</Text>
           {results.slice(0, 2).map((item, index) => (
-            <BookingCard key={item.id || index} booking={item} role="provider" />
+            <BookingCard key={item.id || index} booking={item} />
           ))}
         </View>
       )

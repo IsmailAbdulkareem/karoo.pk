@@ -1,14 +1,19 @@
-from typing import Dict, Any, Optional
+import uuid
+from typing import Dict, Any, Optional, List
 from datetime import datetime
 from mcp.tools.geocode import geocode_location as mcp_geocode
 from db.supabase_client import supabase
 from agents.ranking import rank_providers
+from utils.notifications import notify_booking_created
 
 
 class ToolExecutor:
     """
     Executes MCP tools and database queries for the Karoo agent.
     """
+
+    def __init__(self, user_id: Optional[str] = None):
+        self.user_id = user_id
 
     async def geocode_location(self, location: str) -> Dict[str, Any]:
         """
@@ -169,40 +174,92 @@ class ToolExecutor:
                 "count": 0
             }
 
-    async def calculate_provider_earnings(
+    def _send_booking_notifications(self, booking_id: str, provider_id: str):
+        """Send push notifications for a new booking."""
+        try:
+            prov = supabase.table("providers").select("user_id").eq("id", provider_id).execute()
+            if prov.data and self.user_id:
+                provider_user_id = prov.data[0]["user_id"]
+                user_res = supabase.table("users").select("name").eq("id", self.user_id).execute()
+                user_name = user_res.data[0]["name"] if user_res.data else "User"
+                prov_user_res = supabase.table("users").select("name").eq("id", provider_user_id).execute()
+                provider_name = prov_user_res.data[0]["name"] if prov_user_res.data else "Provider"
+                import asyncio
+                asyncio.ensure_future(notify_booking_created(
+                    booking_id, self.user_id, provider_user_id,
+                    provider_name, user_name, ""
+                ))
+        except Exception as e:
+            print(f"[TOOL EXECUTOR] Notification error: {e}")
+
+    async def _resolve_provider_id(self, provider_id: str) -> Optional[str]:
+        """Resolve a provider name or ID to a valid UUID."""
+        try:
+            uuid.UUID(provider_id)
+            return provider_id
+        except (ValueError, AttributeError):
+            pass
+        result = supabase.table("providers").select("id, users(name)").execute()
+        for p in result.data or []:
+            user_name = ""
+            if p.get("users"):
+                user_name = p["users"].get("name", "")
+            elif p.get("user_id"):
+                user_res = supabase.table("users").select("name").eq("id", p["user_id"]).execute()
+                if user_res.data:
+                    user_name = user_res.data[0].get("name", "")
+            if user_name.lower() in provider_id.lower():
+                return p["id"]
+        return None
+
+    async def create_booking(
         self,
-        provider_id: str
+        provider_id: str,
+        service_type: str,
+        location: str,
+        scheduled_at: str,
+        note: Optional[str] = None,
+        booked_via: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Calculate total earnings for a provider from completed bookings.
+        Create a new booking for a provider.
+        Resolves provider name to UUID if needed.
         """
         try:
-            # Get provider's rate
-            provider_res = supabase.table("providers").select("rate_per_hour").eq("id", provider_id).execute()
-            rate_per_hour = 0
-            if provider_res.data:
-                rate_per_hour = provider_res.data[0].get("rate_per_hour", 0)
+            resolved_id = await self._resolve_provider_id(provider_id)
+            if not resolved_id:
+                return {
+                    "success": False,
+                    "error": f"Provider '{provider_id}' nahi mila. Pehle providers search karein."
+                }
 
-            # Get completed bookings
-            earnings_res = supabase.table("bookings").select("agreed_rate, budget").eq("provider_id", provider_id).eq("status", "completed").execute()
-            completed = earnings_res.data
-
-            # Calculate total
-            total = sum(b.get("agreed_rate") or b.get("budget") or rate_per_hour for b in completed)
-
-            return {
-                "success": True,
-                "total_earned_pkr": total,
-                "total_completed_jobs": len(completed),
-                "provider_id": provider_id,
-                "completed_bookings": completed
+            booking_data = {
+                "user_id": self.user_id,
+                "provider_id": resolved_id,
+                "service_type": service_type,
+                "location": location,
+                "scheduled_at": scheduled_at,
+                "note": note,
+                "booked_via": booked_via or "chat",
+                "status": "pending"
             }
-
+            result = supabase.table("bookings").insert(booking_data).execute()
+            if result.data:
+                booking_id = result.data[0]["id"]
+                self._send_booking_notifications(booking_id, resolved_id)
+                return {
+                    "success": True,
+                    "booking_id": booking_id,
+                    "message": "Booking created successfully"
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to create booking"
+                }
         except Exception as e:
-            print(f"[TOOL EXECUTOR] Calculate earnings error: {e}")
+            print(f"[TOOL EXECUTOR] Create booking error: {e}")
             return {
                 "success": False,
-                "error": str(e),
-                "total_earned_pkr": 0,
-                "total_completed_jobs": 0
+                "error": str(e)
             }

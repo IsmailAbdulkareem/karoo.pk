@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import { bookingsAPI } from '../../lib/api'
-import BookingCard from '../../components/BookingCard'
+import { BookingCard } from '../../components/BookingCard'
 import EmptyState from '../../components/EmptyState'
 import type { Booking } from '../../lib/types'
 

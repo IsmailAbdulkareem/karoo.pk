@@ -1,0 +1,41 @@
+{
+  "session_id": "de5df407-df93-46ae-b72c-99eb2d3d61ad",
+  "timestamp": "2026-05-20T01:17:03.735457",
+  "user_id": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+  "user_message": "earnings kia hein",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "earnings kia hein",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Abhi tak koi completed job record nahi hai, isliye earnings ka koi data available nahi hai. Jaise hi aap koi kaam complete karenge, uska amount yahan show hoga. Agar aapko koi naya kaam ya aaj\u2011ka schedule dekhna ho to bata dijiyega!"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 4768,
+    "outcome": "SUCCESS"
+  }
+}

@@ -41,10 +41,13 @@ export const auth = {
     }
   },
 
-  /** Logout and clear everything */
+  /** Logout - clear stored data only, caller handles navigation */
   logout: async () => {
-    await storage.clearAll();
-    router.replace('/');
+    try {
+      await storage.clearAll();
+    } catch (err) {
+      console.error('Logout clearAll error:', err);
+    }
   },
 
   /** Simple logged‑in check */

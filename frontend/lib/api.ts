@@ -1,9 +1,9 @@
 // lib/api.ts – Axios instance and API helper groups
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { storage } from './storage';
 
 // Base URL for Karoo backend - reads from environment variable
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://ismail233290-karoo-pk.hf.space';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // Create Axios instance
 const api = axios.create({
@@ -33,13 +33,12 @@ api.interceptors.response.use(
 );
 
 // Helper function to wrap API calls with error handling
-async function safeCall<T>(promise: Promise<T>) {
+async function safeCall<T> (promise: Promise<AxiosResponse<T>>) {
   try {
     const result = await promise;
     return result.data;
   } catch (err) {
-    // Urdu-friendly generic error message
-    const message = err?.response?.data?.message ?? 'Kuch masla aa gaya, dobara try karo.';
+    const message = axios.isAxiosError(err) && err.response?.data?.detail || 'Kuch masla aa gaya, dobara try karo.';
     throw new Error(message);
   }
 }

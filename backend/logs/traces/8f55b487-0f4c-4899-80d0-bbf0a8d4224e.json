@@ -1,0 +1,53 @@
+{
+  "session_id": "8f55b487-0f4c-4899-80d0-bbf0a8d4224e",
+  "timestamp": "2026-05-20T00:12:59.959894",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "0 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [],
+      "output": {
+        "service_type": null,
+        "location": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hello! \ud83d\ude4b\u200d\u2640\ufe0f Kaise ho? Aaj main aapki kis cheez mein madad kar sakti hoon? (plumber, electrician, tutor, etc.)\u202f"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 5286,
+    "outcome": "SUCCESS"
+  }
+}

@@ -100,7 +100,7 @@ export default function WorkerProfileScreen() {
             <View className="items-center">
               <Text className="text-gray-500 text-[10px] uppercase font-extrabold tracking-wider mb-1">Rating</Text>
               <View className="flex-row items-center">
-                <Text className="text-white font-black text-base mr-1">{provider.rating.toFixed(1)}</Text>
+                <Text className="text-white font-black text-base mr-1">{provider.rating?.toFixed(1) || '0.0'}</Text>
                 <Text className="text-amber-400 text-base">★</Text>
               </View>
             </View>
@@ -116,7 +116,7 @@ export default function WorkerProfileScreen() {
 
             <View className="items-center">
               <Text className="text-gray-500 text-[10px] uppercase font-extrabold tracking-wider mb-1">Rate / Hour</Text>
-              <Text className="text-white font-black text-base">PKR {provider.rate_per_hour}</Text>
+                <Text className="text-white font-black text-base">PKR {provider.rate_per_hour || 'N/A'}</Text>
             </View>
           </View>
         </View>

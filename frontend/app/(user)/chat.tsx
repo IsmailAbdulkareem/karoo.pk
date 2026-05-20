@@ -230,6 +230,7 @@ export default function ChatScreen() {
                 key={p.id}
                 provider={p}
                 match_score={p.match_score}
+                hideActions={true}
               />
             ))}
           </View>

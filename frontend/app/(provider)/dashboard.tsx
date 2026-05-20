@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Switch, ActivityIndicator, Alert } from 'react-native'
 import { router } from 'expo-router'
 import { authAPI, workersAPI, bookingsAPI, notificationsAPI } from '../../lib/api'
-import { auth as Auth } from '../../lib/auth'
+import { storage } from '../../lib/storage'
 
 export default function ProviderDashboardScreen() {
   const [provider, setProvider] = useState<any>(null)
@@ -76,10 +76,21 @@ export default function ProviderDashboardScreen() {
     }
   }
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     Alert.alert('Logout', 'Kya aap logout karna chahte hain?', [
       { text: 'Nahi', style: 'cancel' },
-      { text: 'Haan', style: 'destructive', onPress: () => Auth.logout() },
+      {
+        text: 'Haan',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await storage.clearAll()
+          } catch (err) {
+            console.error('Logout error:', err)
+          }
+          router.replace('/(auth)/login')
+        },
+      },
     ])
   }
 
@@ -104,8 +115,8 @@ export default function ProviderDashboardScreen() {
       {/* Header section */}
       <View className="flex-row justify-between items-center mb-8 bg-gray-900 border border-gray-800 rounded-3xl p-5 shadow-lg shadow-black/40">
         <View className="flex-row items-center">
-          <TouchableOpacity onPress={handleLogout} className="mr-3 p-2 bg-gray-800 rounded-xl">
-            <Text className="text-gray-400 font-bold text-xs">🚪 Out</Text>
+          <TouchableOpacity onPress={handleLogout} className="mr-3 px-4 py-2.5 bg-red-500/10 border border-red-500/30 rounded-xl">
+            <Text className="text-red-400 font-bold text-sm">🚪 Logout</Text>
           </TouchableOpacity>
           <View>
             <Text className="text-white font-black text-lg">{provider?.name || 'Worker Partner'}</Text>
@@ -223,7 +234,7 @@ export default function ProviderDashboardScreen() {
             className="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-3 flex-row justify-between items-center"
           >
             <View>
-              <Text className="text-white font-bold text-sm mb-1">{booking.user_name || 'Customer'}</Text>
+              <Text className="text-white font-bold text-sm mb-1">{booking.users?.name || 'Customer'}</Text>
               <Text className="text-gray-400 text-xs">📍 {booking.location}</Text>
             </View>
             <View className="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">

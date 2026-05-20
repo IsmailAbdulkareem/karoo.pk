@@ -111,14 +111,14 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
           <View className="w-[48%] mb-2">
             <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">⭐ Rating</Text>
             <View className="flex-row items-center">
-              <StarRating rating={provider.rating} size={14} />
-              <Text className="text-white text-sm font-bold ml-2">{provider.rating.toFixed(1)}</Text>
+              <StarRating rating={provider.rating ?? 0} size={14} />
+              <Text className="text-white text-sm font-bold ml-2">{provider.rating?.toFixed(1) ?? '0.0'}</Text>
             </View>
           </View>
 
           <View className="w-[48%] mb-2">
             <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">💵 Rate</Text>
-            <Text className="text-white text-sm font-bold">Rs. {provider.rate_per_hour}/hr</Text>
+            <Text className="text-white text-sm font-bold">Rs. {provider.rate_per_hour ?? 'N/A'}/hr</Text>
           </View>
 
           {provider.area && (
@@ -147,21 +147,22 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
+                if (!provider.id) return
                 router.push({
                   pathname: '/booking/confirm',
                   params: {
                     provider_id: provider.id,
                     provider_name: provider.name,
                     service_type: provider.service_type,
-                    rating: provider.rating.toString(),
-                    rate_per_hour: provider.rate_per_hour.toString(),
-                    eta_minutes: provider.eta_minutes?.toString() || '',
-                    area: provider.area || '',
-                    estimated_price: provider.estimated_price?.toString() || '',
+                    rating: provider.rating?.toString() ?? '0',
+                    rate_per_hour: provider.rate_per_hour?.toString() ?? '0',
+                    eta_minutes: provider.eta_minutes?.toString() ?? '',
+                    area: provider.area ?? '',
+                    estimated_price: provider.estimated_price?.toString() ?? '',
                   },
                 })
-              }
+              }}
               className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 py-3 rounded-xl items-center shadow-lg shadow-emerald-500/30"
             >
               <Text className="text-white font-bold text-sm">Book Now 🚀</Text>

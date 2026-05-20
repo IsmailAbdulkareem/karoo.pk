@@ -34,6 +34,43 @@ TOOLS = [
                 "required": ["service_type", "location"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_booking",
+            "description": "Create a new booking for a service provider. Requires provider_id, service_type, location, and scheduled_at.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "provider_id": {
+                        "type": "string",
+                        "description": "The ID of the provider to book"
+                    },
+                    "service_type": {
+                        "type": "string",
+                        "description": "Type of service needed (electrician, plumber, ac_technician, tutor, cleaner, carpenter, painter, mechanic, cook, security_guard)"
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Location where service is needed"
+                    },
+                    "scheduled_at": {
+                        "type": "string",
+                        "description": "Date and time for the booking (ISO 8601 format, e.g., '2026-05-21T10:00:00')"
+                    },
+                    "note": {
+                        "type": "string",
+                        "description": "Optional note for the booking"
+                    },
+                    "booked_via": {
+                        "type": "string",
+                        "description": "Optional field to indicate booking source (e.g., 'chat')"
+                    }
+                },
+                "required": ["provider_id", "service_type", "location", "scheduled_at"]
+            }
+        }
     }
 ]
 
@@ -66,7 +103,7 @@ PERSONALITY:
 - Respond to greetings naturally (hello, kese ho, etc.)
 - If user is just chatting, respond conversationally - do NOT call tools
 - Keep responses in Roman Urdu/Urdu/English mix
-- Be warm and friendly"""
+- Be warm and friendly."""
 
 PROVIDER_SYSTEM_PROMPT = """You are Karoo Partner AI, a helpful assistant for service providers in Pakistan.
 
@@ -109,6 +146,10 @@ async def chat_with_agent(
         Dict with reply, tool_calls, and extracted data
     """
     try:
+        BOOKING_KEYWORDS = ["book", "select", "choose", "kara do", "kar do",
+                            "confirm", "book karo", "ko book", "ye wala",
+                            "pehla", "dusra", "teesra", "1", "2", "3"]
+
         # Select system prompt based on role
         system_prompt = PROVIDER_SYSTEM_PROMPT if role == "provider" else USER_SYSTEM_PROMPT
 
@@ -133,12 +174,18 @@ async def chat_with_agent(
         # Add current message
         messages.append({"role": "user", "content": message})
 
-        # Call OpenRouter with function calling (try gpt-oss-120b:free first)
+        # Detect if user wants to book (force tool calling to prevent AI faking it)
+        message_lower = message.lower()
+        wants_to_book = any(kw in message_lower for kw in BOOKING_KEYWORDS)
+        has_providers = any("provider" in m.get("content","").lower() or "area" in m.get("content","").lower() for m in conversation_history[-4:])
+        force_tools = wants_to_book and has_providers
+
+        # Call OpenRouter with function calling
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b:free",
             messages=messages,
             tools=TOOLS,
-            tool_choice="auto"
+            tool_choice="required" if force_tools else "auto"
         )
 
         print(f"[OPENROUTER AGENT] Response: {response}")

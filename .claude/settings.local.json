@@ -97,7 +97,8 @@
       "Bash(chmod +x test_gemini_fixed.sh)",
       "Bash(bash test_gemini_fixed.sh)",
       "mcp__context7__resolve-library-id",
-      "mcp__context7__query-docs"
+      "mcp__context7__query-docs",
+      "Bash(jq)"
     ]
   }
 }

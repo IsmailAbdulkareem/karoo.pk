@@ -1,0 +1,146 @@
+{
+  "session_id": "a7ef3cfd-169b-4d7c-b421-aacf5732babc",
+  "timestamp": "2026-05-20T00:56:17.241060",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "\"Mujhe electrician chahiye G-11 mein kal\""
+        },
+        {
+          "role": "assistant",
+          "content": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+        }
+      ],
+      "output": {
+        "service_type": "electrician",
+        "location": "G-11"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": true,
+        "tool_calls": [
+          {
+            "id": "chatcmpl-tool-860fe26712cf7eab",
+            "name": "search_providers",
+            "arguments": {
+              "location": "G-11",
+              "service_type": "electrician"
+            }
+          }
+        ],
+        "reply": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    },
+    {
+      "name": "Tool Execution",
+      "tool_called": "execute_tools",
+      "input": [
+        {
+          "id": "chatcmpl-tool-860fe26712cf7eab",
+          "name": "search_providers",
+          "arguments": {
+            "location": "G-11",
+            "service_type": "electrician"
+          }
+        }
+      ],
+      "output": {
+        "reply": "Yeh rahe aapke liye kuch electricians jo G\u201111 ke aas\u2011pas available hain:\n\n| # | Naam | Area | Rating | Rate per hour |\n|---|------|------|--------|---------------|\n| 1 | Bilal Electrician | F\u201111 | \u26054.8 | Rs\u202f650 |\n| 2 | Ahmed Electrician | G\u201110 | \u26054.2 | Rs\u202f500 |\n| 3 | Danish Electrician | I\u20118 | \u26054.2 | Rs\u202f450 |\n\nAap in mein se koi choose karna chahenge? Ya phir koi specific time ya preference ho to bata dein!",
+        "tool_results": [
+          {
+            "name": "search_providers",
+            "result": {
+              "success": true,
+              "providers": [
+                {
+                  "id": "ad8cc88a-0bdd-4f5a-b35d-738038f3b312",
+                  "name": "Bilal Electrician",
+                  "service_type": "electrician",
+                  "area": "F-11",
+                  "rating": 4.8,
+                  "rate_per_hour": 650,
+                  "is_available": true,
+                  "bio": "Specialist in home wiring and repairs, F-11 area",
+                  "lat": 33.676,
+                  "lng": 73.011,
+                  "on_time_score": 5,
+                  "review_recency": 1
+                },
+                {
+                  "id": "2fd94fbd-60d3-4739-8f36-3c49672ebe86",
+                  "name": "Ahmed Electrician",
+                  "service_type": "electrician",
+                  "area": "G-10",
+                  "rating": 4.2,
+                  "rate_per_hour": 500,
+                  "is_available": true,
+                  "bio": "Expert electrician in G-10, 5 years experience",
+                  "lat": 33.668,
+                  "lng": 73.022,
+                  "on_time_score": 5,
+                  "review_recency": 1
+                },
+                {
+                  "id": "f7f5bbab-69fc-4de3-aa2c-f714dd5e5c6c",
+                  "name": "Danish Electrician",
+                  "service_type": "electrician",
+                  "area": "I-8",
+                  "rating": 4.2,
+                  "rate_per_hour": 450,
+                  "is_available": true,
+                  "bio": "Affordable electrician in I-8, all types of electrical work",
+                  "lat": 33.656,
+                  "lng": 73.023,
+                  "on_time_score": 5,
+                  "review_recency": 1
+                }
+              ],
+              "count": 3,
+              "service_type": "electrician",
+              "location": "G-11"
+            }
+          }
+        ],
+        "needs_tool_execution": false
+      },
+      "status": "SUCCESS",
+      "time_ms": 600
+    }
+  ],
+  "summary": {
+    "total_steps": 4,
+    "total_time_ms": 14429,
+    "outcome": "SUCCESS"
+  }
+}

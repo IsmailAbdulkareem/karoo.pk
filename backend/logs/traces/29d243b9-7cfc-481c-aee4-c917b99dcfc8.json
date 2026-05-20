@@ -1,0 +1,41 @@
+{
+  "session_id": "29d243b9-7cfc-481c-aee4-c917b99dcfc8",
+  "timestamp": "2026-05-20T01:16:41.914704",
+  "user_id": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hello! \ud83d\ude0a\u202fMain aapki service\u2011related queries mein madad karne ke liye yahan hoon. Kya aap:\n\n- **Naya kaam** dekhna chahte hain?  \n- **Aaj/kal ki bookings** check karni hain?  \n- **Earnings** ka status jana chahte hain?  \n\nBata dijiye, taake main aapki sahulat kar sakun."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 6451,
+    "outcome": "SUCCESS"
+  }
+}

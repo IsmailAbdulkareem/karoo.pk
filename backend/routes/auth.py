@@ -44,7 +44,9 @@ async def register(user: UserRegister):
                 "user_id": user_id,
                 "service_type": "",
                 "area": "",
-                "is_available": False
+                "is_available": True,
+                "is_online": True,
+                "rating": 5.0
             }
             supabase.table("providers").insert(provider_data).execute()
 
