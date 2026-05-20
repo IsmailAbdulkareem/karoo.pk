@@ -159,13 +159,24 @@ async def update_availability(
 ):
     """
     Update provider online/available status (provider only).
+    Updates both users and providers tables for consistency.
     """
     try:
         # Check role
         if current_user["role"] != "provider":
             raise HTTPException(status_code=403, detail="Sirf providers status update kar sakte hain")
 
-        # Update provider
+        # Try to update users table (if columns exist)
+        try:
+            supabase.table("users").update({
+                "is_online": is_online,
+                "is_available": is_available
+            }).eq("id", current_user["user_id"]).execute()
+        except Exception as e:
+            # If users table update fails, just log it (columns might not exist yet)
+            print(f"Warning: Could not update users table: {str(e)}")
+
+        # Update providers table (primary source of truth)
         result = supabase.table("providers").update({
             "is_online": is_online,
             "is_available": is_available

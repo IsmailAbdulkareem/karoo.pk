@@ -68,6 +68,8 @@ export default function ProviderDashboardScreen() {
       await workersAPI.updateAvailability(value, value)
       setIsOnline(value)
       setIsAvailable(value)
+      // Refresh dashboard data to ensure persistence
+      await fetchDashboardData()
       Alert.alert('✅ Status Updated', value ? 'Aap ab online hain aur naye orders le sakte hain!' : 'Aap offline ho chuke hain.')
     } catch (err: any) {
       console.error(err)
@@ -85,11 +87,17 @@ export default function ProviderDashboardScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
+            // Clear storage completely
             await storage.clearAll()
+            // Use setTimeout to ensure storage is cleared before navigation
+            await new Promise(resolve => setTimeout(resolve, 100))
+            // Reset navigation stack and go to landing page
+            router.dismissAll()
+            router.replace('/')
           } catch (err) {
             console.error('Logout error:', err)
+            Alert.alert('Error', 'Logout mein masla hua')
           }
-          router.replace('/(auth)/login')
         },
       },
     ])

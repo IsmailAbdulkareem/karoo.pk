@@ -12,6 +12,7 @@ class UserRegister(BaseModel):
     password: str
     city: Optional[str] = None
     role: str = "user"
+    service_type: Optional[str] = None
 
 class UserLogin(BaseModel):
     phone: str

@@ -1,0 +1,41 @@
+{
+  "session_id": "bdd9abe5-538d-48cc-8057-2a5f80a928ef",
+  "timestamp": "2026-05-20T15:09:38.299392",
+  "user_id": "b89916c6-3f40-49ca-b096-b8bcef46c944",
+  "user_message": "Aaj ki earnings?",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "b89916c6-3f40-49ca-b096-b8bcef46c944",
+      "output": "6 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "Aaj ki earnings?",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Mujhe aapki earnings check karne ke liye kuch zaroori data chahiye (jaise provider ID ya login details). Kripya apna provider ID ya account ka koi reference confirm karen, taake main aapki aaj ki kamai dekh sakun."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 17227,
+    "outcome": "SUCCESS"
+  }
+}

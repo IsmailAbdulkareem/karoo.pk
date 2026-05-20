@@ -46,7 +46,11 @@ async def register(user: UserRegister):
             "email": user.email,
             "password_hash": password_hash,
             "city": user.city,
-            "role": user.role
+            "role": user.role,
+            "service_type": user.service_type or "",
+            "is_online": user.role == "provider",
+            "is_available": user.role == "provider",
+            "rating": 5.0
         }
         result = supabase.table("users").insert(user_data).execute()
 
@@ -55,11 +59,11 @@ async def register(user: UserRegister):
 
         user_id = result.data[0]["id"]
 
-        # If provider, create provider record
+        # If provider, also create provider record for backwards compatibility
         if user.role == "provider":
             provider_data = {
                 "user_id": user_id,
-                "service_type": "",
+                "service_type": user.service_type or "",
                 "area": "",
                 "is_available": True,
                 "is_online": True,
@@ -120,6 +124,7 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     """
     Get current user profile (protected endpoint).
+    For providers, also fetch data from providers table.
     """
     try:
         result = supabase.table("users").select("*").eq("id", current_user["user_id"]).execute()
@@ -130,6 +135,19 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         user = result.data[0]
         # Remove password_hash from response
         user.pop("password_hash", None)
+
+        # If provider, also get provider-specific data
+        if user.get("role") == "provider":
+            provider_result = supabase.table("providers").select("*").eq("user_id", current_user["user_id"]).execute()
+            if provider_result.data:
+                provider = provider_result.data[0]
+                # Merge provider data, but keep users table as primary
+                if not user.get("service_type"):
+                    user["service_type"] = provider.get("service_type", "")
+                if not user.get("is_online"):
+                    user["is_online"] = provider.get("is_online", False)
+                if not user.get("is_available"):
+                    user["is_available"] = provider.get("is_available", False)
 
         return user
 

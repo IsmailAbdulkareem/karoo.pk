@@ -1,0 +1,41 @@
+{
+  "session_id": "77a131e7-e1bc-4190-ae2f-b0508b7335a7",
+  "timestamp": "2026-05-20T15:07:04.510891",
+  "user_id": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+  "user_message": "hello",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "5669634e-df11-48b0-ab1a-9f037999ea9b",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hello",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hello! \ud83d\ude0a\u202fAap ko kya chahiye \u2013 naya kaam dekhna, aaj ya kal ki bookings check karna, ya earnings ka summary? Bata dijiye, taake mai aapki madad kar sakun."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 13321,
+    "outcome": "SUCCESS"
+  }
+}
