@@ -135,7 +135,7 @@ export default function UserNotificationsScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <EmptyState
-              emoji="🔔"
+              icon="bell"
               title="Koi notification nahi"
               subtitle="Naye orders aur status updates ki notifications yahan milengi."
             />

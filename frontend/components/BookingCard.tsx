@@ -1,95 +1,124 @@
 // components/BookingCard.tsx
 import React from 'react';
-import { View, Text, Pressable, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { bookingsAPI } from '../lib/api';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
-/**
- * Props for a single booking item.
- */
-export interface Booking {
-  id: string;
-  provider_id: string;
-  provider_name: string;
-  service_type: string;
-  location: string;
-  scheduled_time: string; // ISO string or display format
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
-  rating?: number;
+export interface BookingCardProps {
+  booking: any;
+  onPress?: () => void; // Add this
 }
 
-interface BookingCardProps {
-  booking: Booking;
-  onRefresh?: () => void; // optional callback after actions
-}
-
-/**
- * Urdu‑friendly status badge colour mapping.
- */
-const statusMap: Record<Booking['status'], { label: string; bg: string }> = {
-  pending: { label: 'پینڈنگ', bg: 'bg-yellow-400' },
-  confirmed: { label: 'مقرر', bg: 'bg-green-500' },
-  completed: { label: 'مکمل', bg: 'bg-blue-500' },
-  cancelled: { label: 'منسوخ', bg: 'bg-red-500' },
-};
-
-export const BookingCard: React.FC<BookingCardProps> = ({ booking, onRefresh }) => {
-  const router = useRouter();
-
-  const handleCancel = async () => {
-    try {
-      // call backend cancel endpoint (assuming /bookings/:id/cancel)
-      await bookingsAPI.cancel(booking.id);
-      Alert.alert('✅', 'Booking منسوخ کر دی گئی');
-      onRefresh?.();
-    } catch (e: any) {
-      Alert.alert('❌', e.message || 'کچھ مسلئا آ گیا');
-    }
+export function BookingCard({ booking, onPress }: BookingCardProps) {
+  const getStatusColor = (status: string) => {
+    const s = status?.toLowerCase();
+    if (s === 'pending') return 'bg-yellow-500/20 border-yellow-500';
+    if (s === 'confirmed') return 'bg-blue-500/20 border-blue-500';
+    if (s === 'completed') return 'bg-green-500/20 border-green-500';
+    if (s === 'cancelled') return 'bg-red-500/20 border-red-500';
+    return 'bg-gray-500/20 border-gray-500';
   };
 
-  const handleDetails = () => {
-    // Navigate to a detail screen – for now just alert placeholder
-    Alert.alert('تفصیلات', `Booking ID: ${booking.id}`);
+  const getStatusIcon = (status: string) => {
+    const s = status?.toLowerCase();
+    if (s === 'pending') return 'clock';
+    if (s === 'confirmed') return 'check-circle';
+    if (s === 'completed') return 'check';
+    if (s === 'cancelled') return 'x-circle';
+    return 'info';
   };
 
-  const handleRate = () => {
-    // Navigate to rating screen for provider
-    router.push({ pathname: '/rating/provider', params: { provider_id: booking.provider_id } });
+  const getStatusTextColor = (status: string) => {
+    const s = status?.toLowerCase();
+    if (s === 'pending') return 'text-yellow-500';
+    if (s === 'confirmed') return 'text-blue-500';
+    if (s === 'completed') return 'text-green-500';
+    if (s === 'cancelled') return 'text-red-500';
+    return 'text-gray-500';
   };
 
-  const { label, bg } = statusMap[booking.status];
+  const Wrapper = onPress ? TouchableOpacity : View;
 
   return (
-    <View className="p-4 mb-3 bg-gray-800 rounded-xl shadow-md">
-      <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-lg font-medium text-white">{booking.provider_name}</Text>
-        <View className={`px-2 py-1 rounded ${bg}`}>
-          <Text className="text-xs font-semibold text-white">{label}</Text>
+    <Wrapper
+      onPress={onPress}
+      className="bg-gray-900 rounded-xl p-4 mb-3 border border-gray-800"
+      activeOpacity={onPress ? 0.7 : 1}
+    >
+      {/* Service Name */}
+      <View className="flex-row items-center justify-between mb-3">
+        <Text className="text-white text-lg font-bold flex-1">
+          {booking.service?.name || 'Service'}
+        </Text>
+        <View className={`px-3 py-1 rounded-full border ${getStatusColor(booking.status)}`}>
+          <View className="flex-row items-center">
+            <Feather 
+              name={getStatusIcon(booking.status) as any} 
+              size={12} 
+              color={getStatusTextColor(booking.status).includes('yellow') ? '#eab308' :
+                     getStatusTextColor(booking.status).includes('blue') ? '#3b82f6' :
+                     getStatusTextColor(booking.status).includes('green') ? '#10b981' :
+                     getStatusTextColor(booking.status).includes('red') ? '#ef4444' : '#6b7280'} 
+            />
+            <Text className={`ml-1 text-xs font-bold ${getStatusTextColor(booking.status)}`}>
+              {booking.status || 'Unknown'}
+            </Text>
+          </View>
         </View>
       </View>
-      <Text className="text-sm text-gray-300">{booking.service_type}</Text>
-      <Text className="text-sm text-gray-300">📍 {booking.location}</Text>
-      <Text className="text-sm text-gray-300">🗓️ {booking.scheduled_time}</Text>
 
-      {/* Action buttons based on status */}
-      {booking.status === 'pending' && (
-        <Pressable
-          onPress={handleCancel}
-          className="mt-2 border border-red-500 rounded px-3 py-1 self-start"
-        >
-          <Text className="text-red-500 font-medium">منسوخ کریں</Text>
-        </Pressable>
+      {/* Provider Info */}
+      {booking.provider && (
+        <View className="flex-row items-center mb-2">
+          <Feather name="user" size={14} color="#9ca3af" />
+          <Text className="text-gray-400 ml-2 text-sm">
+            {booking.provider.name || 'Provider'}
+          </Text>
+        </View>
       )}
-      {booking.status === 'confirmed' && (
-        <Pressable onPress={handleDetails} className="mt-2 bg-blue-600 rounded px-3 py-1 self-start">
-          <Text className="text-white font-medium">تفصیلات</Text>
-        </Pressable>
+
+      {/* Date & Time */}
+      {booking.scheduled_at && (
+        <View className="flex-row items-center mb-2">
+          <Feather name="calendar" size={14} color="#9ca3af" />
+          <Text className="text-gray-400 ml-2 text-sm">
+            {new Date(booking.scheduled_at).toLocaleDateString('en-US', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </Text>
+        </View>
       )}
-      {booking.status === 'completed' && !booking.rating && (
-        <Pressable onPress={handleRate} className="mt-2 bg-yellow-500 rounded px-3 py-1 self-start">
-          <Text className="text-white font-medium">ریٹ کریں ⭐</Text>
-        </Pressable>
+
+      {/* Location */}
+      {booking.address && (
+        <View className="flex-row items-start mb-2">
+          <Feather name="map-pin" size={14} color="#9ca3af" />
+          <Text className="text-gray-400 ml-2 text-sm flex-1" numberOfLines={1}>
+            {booking.address}
+          </Text>
+        </View>
       )}
-    </View>
+
+      {/* Price */}
+      {booking.total_amount && (
+        <View className="flex-row items-center justify-between mt-3 pt-3 border-t border-gray-800">
+          <Text className="text-gray-400 text-sm">Total Amount</Text>
+          <Text className="text-emerald-500 text-lg font-bold">
+            PKR {booking.total_amount}
+          </Text>
+        </View>
+      )}
+
+      {/* Tap indicator if onPress exists */}
+      {onPress && (
+        <View className="flex-row items-center justify-center mt-2">
+          <Text className="text-gray-500 text-xs">Tap for details</Text>
+          <Feather name="chevron-right" size={12} color="#6b7280" />
+        </View>
+      )}
+    </Wrapper>
   );
-};
+}

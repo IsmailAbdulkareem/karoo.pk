@@ -71,18 +71,17 @@ async def get_open_requests(
         if current_user["role"] != "provider":
             raise HTTPException(status_code=403, detail="Sirf providers requests dekh sakte hain")
 
-        # Build query
-        query = supabase.table("service_requests").select("*, users(name, phone)").eq("status", "open")
+        # Fetch all open requests (without ilike which fails on some column types)
+        result = supabase.table("service_requests").select("*, users(name, phone)").eq("status", "open").order("created_at", desc=True).execute()
+        data = result.data
 
-        # Apply filters
+        # Filter in Python
         if service_type:
-            query = query.ilike("service_type", f"%{service_type}%")
+            data = [r for r in data if r.get("service_type") and service_type.lower() in r["service_type"].lower()]
         if area:
-            query = query.ilike("location", f"%{area}%")
+            data = [r for r in data if r.get("location") and area.lower() in r["location"].lower()]
 
-        result = query.order("created_at", desc=True).execute()
-
-        return result.data
+        return data
 
     except HTTPException:
         raise

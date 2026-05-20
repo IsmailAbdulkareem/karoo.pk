@@ -1,0 +1,94 @@
+{
+  "session_id": "bb471090-9404-4c45-a0a9-07029f0296f4",
+  "timestamp": "2026-05-20T06:31:35.599191",
+  "user_id": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+  "user_message": "I need an electrician in G-11",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "assistant",
+          "content": "\u2705 **Booking Confirmed!**\n\nProvider: Ali Plumber\nService: plumber\nTime: 2026-05-20T10:00:00\n\nBooking ID: 93acbd2f-5052-4597-a357-c53cf6b165e5\n\nAapki booking confirm ho gayi hai!"
+        },
+        {
+          "role": "user",
+          "content": "I need an electrician in G-11"
+        },
+        {
+          "role": "assistant",
+          "content": "Aapke liye 3 electricians available hain near G\u201111:\n\n1. **Bilal Electrician** \u2013 Rating: 4.8 \u2022 Rate: \u20a8650/hr \u2022 Area: F\u201111  \n2. **Ahmed Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8500/hr \u2022 Area: G\u201110  \n3. **Danish Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8450/hr \u2022 Area: I\u20118  \n\nAap kaunsa select karna chahenge? (Please reply with the number or name.)"
+        },
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! \ud83d\ude0a Aapko koi madad chahiye ya sirf greetings share kar rahe hain?"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "assistant",
+          "content": "\u2705 **Booking Confirmed!**\n\nProvider: Ali Plumber\nService: plumber\nTime: 2026-05-20T10:00:00\n\nBooking ID: 3e827178-82aa-4132-b692-6547f110dd61\n\nAapki booking confirm ho gayi hai!"
+        }
+      ],
+      "output": {
+        "service_type": "plumber",
+        "location": "Rawalpindi"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "I need an electrician in G-11",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Aapke liye 3 electricians available hain near G\u201111:\n\n1. **Bilal Electrician** \u2013 Rating: 4.8 \u2022 Rate: \u20a8650/hr \u2022 Area: F\u201111  \n2. **Ahmed Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8500/hr \u2022 Area: G\u201110  \n3. **Danish Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8450/hr \u2022 Area: I\u20118  \n\nKripya number (1, 2, ya 3) ya naam batayein jise aap select karna chahte hain."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 11616,
+    "outcome": "SUCCESS"
+  }
+}

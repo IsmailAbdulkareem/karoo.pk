@@ -91,9 +91,11 @@ export default function UserProfileScreen() {
 
       <TouchableOpacity
         onPress={handleLogout}
+        accessibilityRole="button"
+        accessibilityLabel="Logout from your account"
         className="bg-red-500/10 border border-red-500/30 py-4 rounded-xl items-center shadow-lg shadow-black/10"
       >
-        <Text className="text-red-400 font-bold text-base">Logout Partner 🚪</Text>
+        <Text className="text-red-400 font-bold text-base">Logout</Text>
       </TouchableOpacity>
     </ScrollView>
   )

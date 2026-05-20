@@ -1,0 +1,41 @@
+{
+  "session_id": "fdb56138-9fc8-4fe8-9c46-870577e838dd",
+  "timestamp": "2026-05-20T06:28:25.489522",
+  "user_id": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+  "user_message": "Mujhe plumber chahiye Rawalpindi mein",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+      "output": "0 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [],
+      "output": {
+        "service_type": null,
+        "location": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 2503,
+    "outcome": "SUCCESS"
+  }
+}

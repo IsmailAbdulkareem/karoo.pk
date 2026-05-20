@@ -106,7 +106,7 @@ export default function ConversationsScreen() {
           className="flex-1"
           ListEmptyComponent={
             <EmptyState
-              emoji="💬"
+              icon="message-circle"
               title="Koi conversation nahi"
               subtitle="Jab aap kisi provider ke saath booking karenge, tab yahan chat kar sakte hain."
             />

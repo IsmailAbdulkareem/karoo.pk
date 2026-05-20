@@ -1,0 +1,74 @@
+{
+  "session_id": "e7e51e25-0b17-4230-b747-1e6600ff3005",
+  "timestamp": "2026-05-20T06:59:33.733322",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "Farhan Plumber isko book kar lo",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "8 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! \ud83d\ude0a Kaise ho? Aaj main aapki kis cheez mein madad kar sakta hoon?"
+        },
+        {
+          "role": "user",
+          "content": "hi"
+        },
+        {
+          "role": "assistant",
+          "content": "Hi! Kya aapko koi service chahiye? Jaise plumber, electrician, ya koi aur? Aur service kis area mein chahiye, location bata dijiye."
+        },
+        {
+          "role": "user",
+          "content": "plumber cheye f 11 mein 3 pm tomorrrow"
+        },
+        {
+          "role": "assistant",
+          "content": "Yeh rahe kuch plumber jo F\u201111 ke aas\u2011paas available hain:\n\n1\ufe0f\u20e3 **Ali Plumber** \u2013 Rating: 5 \u2b50, Rate: Rs\u202f500/hr, 10 saal ka tajurba.  \n2\ufe0f\u20e3 **Ali Plumber** \u2013 Rating: 5 \u2b50, Rate: Rs\u202f500/hr, 10 saal ka tajurba.  \n3\ufe0f\u20e3 **Ali Plumber** \u2013 Rating: 5 \u2b50, Rate: Rs\u202f500/hr, 10 saal ka tajurba.\n\nAap kaun sa plumber select karna chahenge? (Number 1, 2 ya 3 type kar dein) Aur aapka preferred time **3\u202fPM kal** confirm karte hain?"
+        },
+        {
+          "role": "user",
+          "content": "plumber cheye f 11 mein 3 pm tomorrrow"
+        },
+        {
+          "role": "assistant",
+          "content": "Aapke liye F\u201111 ke aas\u2011paas yeh plumber available hain:\n\n| No | Name | Area | Rating | Rate per hour |\n|----|------|------|--------|---------------|\n| 1 | Ali Plumber | Rawalpindi (F\u201111 ke qareeb) | \u2b50\u2b50\u2b50\u2b50\u2b50 (5) | Rs\u202f500 |\n| 2 | Umer Plumber | G\u201111 (thoda door) | \u2b50\u2b50\u2b50\u2b50\u2729 (4.4) | Rs\u202f600 |\n| 3 | Farhan Plumber | F\u201110 (nearby) | \u2b50\u2b50\u2b50\u2b50\u2729 (4.3) | Rs\u202f550 |\n\nAap kaun sa plumber select karna chahenge? **Number (1, 2, ya 3)** type kar dein, phir main aapka booking **3\u202fPM kal** ke liye confirm kar dunga."
+        }
+      ],
+      "output": {
+        "service_type": "plumber",
+        "location": "Rawalpindi"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 2003,
+    "outcome": "SUCCESS"
+  }
+}

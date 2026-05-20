@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Switch, ActivityIndicator, Alert } from 'react-native'
 import { router } from 'expo-router'
+import { Feather } from '@expo/vector-icons'
 import { authAPI, workersAPI, bookingsAPI, notificationsAPI } from '../../lib/api'
 import { storage } from '../../lib/storage'
 
@@ -115,8 +116,11 @@ export default function ProviderDashboardScreen() {
       {/* Header section */}
       <View className="flex-row justify-between items-center mb-8 bg-gray-900 border border-gray-800 rounded-3xl p-5 shadow-lg shadow-black/40">
         <View className="flex-row items-center">
-          <TouchableOpacity onPress={handleLogout} className="mr-3 px-4 py-2.5 bg-red-500/10 border border-red-500/30 rounded-xl">
-            <Text className="text-red-400 font-bold text-sm">🚪 Logout</Text>
+          <TouchableOpacity onPress={handleLogout} className="mr-3 px-4 py-2.5 bg-red-500/10 border border-red-500/30 rounded-xl" accessibilityRole="button" accessibilityLabel="Logout">
+            <View className="flex-row items-center">
+              <Feather name="log-out" size={14} color="#f87171" style={{ marginRight: 4 }} />
+              <Text className="text-red-400 font-bold text-sm">Logout</Text>
+            </View>
           </TouchableOpacity>
           <View>
             <Text className="text-white font-black text-lg">{provider?.name || 'Worker Partner'}</Text>
@@ -129,8 +133,10 @@ export default function ProviderDashboardScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(provider)/notifications')}
           className="relative p-2.5 bg-gray-850 rounded-xl border border-gray-800"
+          accessibilityRole="button"
+          accessibilityLabel={`Notifications${unreadNotifications > 0 ? `, ${unreadNotifications} unread` : ''}`}
         >
-          <Text className="text-lg">🔔</Text>
+          <Feather name="bell" size={20} color="#9ca3af" />
           {unreadNotifications > 0 && (
             <View className="absolute -top-1 -right-1 bg-emerald-500 w-5 h-5 rounded-full items-center justify-center border border-gray-900">
               <Text className="text-white text-[9px] font-black">{unreadNotifications}</Text>
@@ -162,19 +168,19 @@ export default function ProviderDashboardScreen() {
       {/* Numerical core metrics stats Row */}
       <View className="flex-row justify-between mb-6">
         <View className="w-[31%] bg-gray-900 border border-gray-800 rounded-2xl p-3 items-center shadow-sm">
-          <Text className="text-2xl mb-1">📅</Text>
+          <Feather name="calendar" size={22} color="#10b981" style={{ marginBottom: 4 }} />
           <Text className="text-white font-extrabold text-lg">{stats.todayCount}</Text>
           <Text className="text-gray-500 text-[9px] font-bold uppercase mt-0.5">Today Jobs</Text>
         </View>
 
         <View className="w-[31%] bg-gray-900 border border-gray-800 rounded-2xl p-3 items-center shadow-sm">
-          <Text className="text-2xl mb-1">💰</Text>
+          <Feather name="trending-up" size={22} color="#10b981" style={{ marginBottom: 4 }} />
           <Text className="text-white font-extrabold text-base" numberOfLines={1}>PKR {stats.totalEarned}</Text>
           <Text className="text-gray-500 text-[9px] font-bold uppercase mt-0.5">Earned</Text>
         </View>
 
         <View className="w-[31%] bg-gray-900 border border-gray-800 rounded-2xl p-3 items-center shadow-sm">
-          <Text className="text-2xl mb-1">⭐</Text>
+          <Feather name="star" size={22} color="#fbbf24" style={{ marginBottom: 4 }} />
           <Text className="text-white font-extrabold text-lg">{stats.rating.toFixed(1)}</Text>
           <Text className="text-gray-500 text-[9px] font-bold uppercase mt-0.5">Rating</Text>
         </View>
@@ -186,8 +192,10 @@ export default function ProviderDashboardScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(provider)/requests')}
           className="w-[48%] bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4 items-center"
+          accessibilityRole="button"
+          accessibilityLabel="Open Requests"
         >
-          <Text className="text-3xl mb-2">📋</Text>
+          <Feather name="shopping-bag" size={28} color="#10b981" style={{ marginBottom: 8 }} />
           <Text className="text-white font-extrabold text-sm text-center">Open Requests</Text>
           <Text className="text-gray-500 text-[10px] text-center mt-0.5">Pick available jobs</Text>
         </TouchableOpacity>
@@ -195,8 +203,10 @@ export default function ProviderDashboardScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(provider)/bookings')}
           className="w-[48%] bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4 items-center"
+          accessibilityRole="button"
+          accessibilityLabel="My Bookings"
         >
-          <Text className="text-3xl mb-2">📅</Text>
+          <Feather name="calendar" size={28} color="#10b981" style={{ marginBottom: 8 }} />
           <Text className="text-white font-extrabold text-sm text-center">My Bookings</Text>
           <Text className="text-gray-500 text-[10px] text-center mt-0.5">Manage schedule</Text>
         </TouchableOpacity>
@@ -204,8 +214,10 @@ export default function ProviderDashboardScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(provider)/earnings')}
           className="w-[48%] bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4 items-center"
+          accessibilityRole="button"
+          accessibilityLabel="Earnings"
         >
-          <Text className="text-3xl mb-2">💰</Text>
+          <Feather name="trending-up" size={28} color="#10b981" style={{ marginBottom: 8 }} />
           <Text className="text-white font-extrabold text-sm text-center">Earnings</Text>
           <Text className="text-gray-500 text-[10px] text-center mt-0.5">Track PKR logs</Text>
         </TouchableOpacity>
@@ -213,8 +225,10 @@ export default function ProviderDashboardScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(provider)/chat')}
           className="w-[48%] bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-4 items-center"
+          accessibilityRole="button"
+          accessibilityLabel="Provider AI Assistant"
         >
-          <Text className="text-3xl mb-2">🤖</Text>
+          <Feather name="message-square" size={28} color="#10b981" style={{ marginBottom: 8 }} />
           <Text className="text-white font-extrabold text-sm text-center">Provider AI</Text>
           <Text className="text-gray-500 text-[10px] text-center mt-0.5">Urdu AI assistant</Text>
         </TouchableOpacity>
@@ -235,7 +249,10 @@ export default function ProviderDashboardScreen() {
           >
             <View>
               <Text className="text-white font-bold text-sm mb-1">{booking.users?.name || 'Customer'}</Text>
-              <Text className="text-gray-400 text-xs">📍 {booking.location}</Text>
+              <View className="flex-row items-center">
+                <Feather name="map-pin" size={12} color="#9ca3af" style={{ marginRight: 3 }} />
+                <Text className="text-gray-400 text-xs">{booking.location}</Text>
+              </View>
             </View>
             <View className="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
               <Text className="text-emerald-400 text-xs font-black uppercase">{booking.status}</Text>

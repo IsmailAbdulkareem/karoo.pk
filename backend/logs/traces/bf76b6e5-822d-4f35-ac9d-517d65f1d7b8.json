@@ -1,0 +1,62 @@
+{
+  "session_id": "bf76b6e5-822d-4f35-ac9d-517d65f1d7b8",
+  "timestamp": "2026-05-20T05:14:25.887772",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "hello",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! \ud83d\ude0a Kaise ho? Kya koi service chahiye ya bas gupshup karni hai?"
+        }
+      ],
+      "output": {
+        "service_type": null,
+        "location": null
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hello",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Waah, double hello! \ud83d\ude04 Kya aapko koi service chahiye? Jaise plumber, electrician, ya koi aur? Batayein, phir aage badhte hain."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 10661,
+    "outcome": "SUCCESS"
+  }
+}

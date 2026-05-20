@@ -13,6 +13,7 @@ import {
 import { chatAPI } from '../../lib/api'
 import MessageBubble from '../../components/MessageBubble'
 import { BookingCard } from '../../components/BookingCard'
+import { Feather } from '@expo/vector-icons'
 
 interface ProviderMessageProps {
   id: string
@@ -153,8 +154,8 @@ export default function ProviderChatScreen() {
       {/* Dynamic Header */}
       <View className="flex-row justify-between items-center px-6 py-4 bg-gray-900 border-b border-gray-800">
         <View className="flex-row items-center">
-          <Text className="text-2xl mr-2">👷 Partner</Text>
-          <View>
+          <Feather name="message-square" size={24} color="#10b981" />
+          <View className="ml-3">
             <Text className="text-white font-extrabold text-lg">Partner AI Chat</Text>
             <Text className="text-emerald-400 text-xs font-bold">Manage by Voice/Natural Chat</Text>
           </View>
@@ -168,6 +169,9 @@ export default function ProviderChatScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View className="flex-col">
+            <Text className="text-gray-500 text-[10px] font-bold mb-1 ml-1">
+              {item.sender === 'user' ? 'You' : 'Assistant'}
+            </Text>
             <MessageBubble
               sender={item.sender === 'user' ? 'user' : 'bot'}
               text={item.text}
@@ -211,7 +215,7 @@ export default function ProviderChatScreen() {
             !inputText.trim() ? 'opacity-50' : 'active:opacity-80'
           }`}
         >
-          <Text className="text-white font-extrabold text-base">➔</Text>
+          <Feather name="arrow-right" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

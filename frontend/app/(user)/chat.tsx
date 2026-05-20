@@ -1,24 +1,28 @@
 // app/(user)/chat.tsx
 import { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator, TouchableWithoutFeedback, LayoutAnimation, UIManager, Platform, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Platform,
+  ScrollView,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 import { router } from 'expo-router';
 import { chatAPI, notificationsAPI } from '@/lib/api';
-import { storage } from '@/lib/storage';
 import ProviderCard from '@/components/ProviderCard';
 import { Feather } from '@expo/vector-icons';
-
-// Enable LayoutAnimation on Android
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 interface Message {
   id: string;
   role: 'user' | 'bot';
   content: string;
-  // optional extra data for bot messages
   providers?: Provider[];
-  // for debug trace
   trace?: string;
   needsClarification?: boolean;
 }
@@ -30,7 +34,7 @@ interface Provider {
   rating: number;
   eta_minutes: number;
   rate_per_hour: number;
-  match_score: number; // 0-1
+  match_score: number;
   is_available: boolean;
   area?: string;
 }
@@ -42,41 +46,40 @@ export default function ChatScreen() {
   const [unreadCount, setUnreadCount] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
-  // Show welcome message
   const showWelcomeMessage = () => {
-    setMessages([{
-      id: 'welcome',
-      role: 'bot',
-      content: 'Assalam o Alaikum! 👋 Kaunsi service chahiye?\nUrdu ya English mein batao',
-    }]);
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'bot',
+        content: 'Assalam o Alaikum! Kaunsi service chahiye?\nUrdu ya English mein batao',
+      },
+    ]);
   };
 
-  // Load chat history on mount
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const data = await chatAPI.history();
-        // API is expected to return array of {id, role, content, ...}
+        const data = await chatAPI.history() as any;
         if (data && data.length) {
-          setMessages(data); // oldest to newest (ascending)
+          setMessages(data);
         } else {
-          // No history, show welcome message
           showWelcomeMessage();
         }
       } catch (e) {
-        console.error('Chat history load error', e);
         showWelcomeMessage();
       }
     };
-    fetchHistory();
-    // fetch unread notifications count
+
     const fetchUnread = async () => {
       try {
-        const notes = await notificationsAPI.list();
-        const count = notes.notifications?.filter((n: any) => !n.is_read).length || 0;
+        const notes = await notificationsAPI.list() as any;
+        const count =
+          notes.notifications?.filter((n: any) => !n.is_read).length || 0;
         setUnreadCount(count);
       } catch (_) {}
     };
+
+    fetchHistory();
     fetchUnread();
   }, []);
 
@@ -86,144 +89,134 @@ export default function ChatScreen() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
     const userMsg: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input.trim(),
     };
+
     addMessage(userMsg);
     setInput('');
     setLoadingSend(true);
-    // show typing indicator as a bot message with placeholder
+
     const typingMsg: Message = {
       id: 'typing',
       role: 'bot',
-      content: '...', // will be replaced
+      content: '...',
     };
     addMessage(typingMsg);
+
     try {
-      const response = await chatAPI.send(userMsg.content);
-      // response shape: {reply, providers?, agent_trace?, needs_clarification?}
+      const response = await chatAPI.send(userMsg.content) as any;
       const botMsg: Message = {
-        id: Date.now().toString(),
+        id: (Date.now() + 1).toString(),
         role: 'bot',
-        content: response.reply,
+        content: response.reply || response.message || 'Kuch masla aa gaya.',
         providers: response.providers,
         trace: response.agent_trace,
         needsClarification: response.needs_clarification,
       };
-      setMessages((prev) => [...prev.filter((m) => m.id !== 'typing'), botMsg]);
+      setMessages((prev) => [
+        ...prev.filter((m) => m.id !== 'typing'),
+        botMsg,
+      ]);
     } catch (e: any) {
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== 'typing'),
         {
-          id: Date.now().toString(),
+          id: (Date.now() + 1).toString(),
           role: 'bot',
           content: e.message || 'Kuch masla aa gaya. Dobara try karo.',
-        }
+        },
       ]);
     } finally {
       setLoadingSend(false);
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     }
   };
 
   const handleClearHistory = () => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('Kya aap poori chat history delete karna chahte hain?')) {
-        chatAPI.clearHistory().then(() => {
-          setMessages([]);
-          showWelcomeMessage();
-        }).catch(() => alert('Error: Delete nahi hua'));
-      }
-    } else {
-      Alert.alert(
-        'Chat Delete Karo?',
-        'Kya aap poori chat history delete karna chahte hain?',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Delete',
-            style: 'destructive',
-            onPress: async () => {
-              try {
-                await chatAPI.clearHistory();
-                setMessages([]);
-                showWelcomeMessage();
-              } catch (e: any) {
-                Alert.alert('Error', 'Delete nahi hua');
-              }
-            },
+    Alert.alert(
+      'Chat Delete Karo?',
+      'Kya aap poori chat history delete karna chahte hain?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await chatAPI.clearHistory();
+              setMessages([]);
+              showWelcomeMessage();
+            } catch (e: any) {
+              Alert.alert('Error', 'Delete nahi hua');
+            }
           },
-        ]
-      );
-    }
+        },
+      ]
+    );
   };
 
   const handleNewConversation = () => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('Current chat screen clear ho jayegi. Naya Chat Shuru Karo?')) {
-        setMessages([]);
-        showWelcomeMessage();
-      }
-    } else {
-      Alert.alert(
-        'Naya Chat Shuru Karo?',
-        'Current chat screen clear ho jayegi',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'New Chat',
-            onPress: () => {
-              setMessages([]);
-              showWelcomeMessage();
-            }
-          }
-        ]
-      );
-    }
+    Alert.alert(
+      'Naya Chat Shuru Karo?',
+      'Current chat screen clear ho jayegi',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'New Chat',
+          onPress: () => {
+            setMessages([]);
+            showWelcomeMessage();
+          },
+        },
+      ]
+    );
   };
 
   const renderMessage = ({ item }: { item: Message }) => {
+    // User message
     if (item.role === 'user') {
       return (
-        <View className="self-end max-w-[80%] mb-3 px-2">
-          <View className="bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-3xl rounded-br-md px-4 py-3 shadow-lg">
-            <Text className="text-white text-base leading-5">{item.content}</Text>
+        <View style={styles.userMsgWrapper}>
+          <View style={styles.userBubble}>
+            <Text style={styles.userText}>{item.content}</Text>
           </View>
-          <Text className="text-xs text-gray-500 mt-1 text-right">You</Text>
+          <Text style={styles.userLabel}>You</Text>
+        </View>
+      );
+    }
+
+    // Typing indicator
+    if (item.content === '...') {
+      return (
+        <View style={styles.botMsgWrapper}>
+          <View style={styles.typingBubble}>
+            <ActivityIndicator size="small" color="#10b981" />
+            <Text style={styles.typingText}>Karoo soch raha hai...</Text>
+          </View>
         </View>
       );
     }
 
     // Bot message
-    if (item.content === '...') {
-      // Typing indicator
-      return (
-        <View className="self-start max-w-[80%] mb-4 px-2">
-          <View className="bg-gray-800 rounded-3xl rounded-bl-md px-4 py-3 flex-row items-center">
-            <View className="flex-row space-x-1">
-              <View className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <View className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <View className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            </View>
-            <Text className="text-gray-400 ml-2 text-sm">Karoo soch raha hai...</Text>
-          </View>
-        </View>
-      );
-    }
-
     return (
-      <View className="self-start max-w-[85%] mb-4 px-2">
-        <View className="bg-gray-800 rounded-3xl rounded-bl-md px-4 py-3 shadow-lg border border-gray-700">
-          <Text className="text-white text-base leading-6">{item.content}</Text>
+      <View style={styles.botMsgWrapper}>
+        <View style={styles.botBubble}>
+          <Text style={styles.botText}>{item.content}</Text>
         </View>
-        <Text className="text-xs text-gray-500 mt-1">Karoo AI 🤖</Text>
+          <Text style={styles.botLabel}>Karoo AI</Text>
 
-        {/* Provider cards (if any) */}
+        {/* Provider cards */}
         {item.providers && item.providers.length > 0 && (
-          <View className="mt-3 space-y-2">
-            <Text className="text-emerald-500 font-semibold text-sm mb-1">
-              ✨ {item.providers.length} Provider{item.providers.length > 1 ? 's' : ''} Mil Gaye
+          <View style={styles.providersWrapper}>
+            <Text style={styles.providersTitle}>
+              {item.providers.length} Provider
+              {item.providers.length > 1 ? 's' : ''} Mil Gaye
             </Text>
             {item.providers.map((p) => (
               <ProviderCard
@@ -236,118 +229,315 @@ export default function ChatScreen() {
           </View>
         )}
 
-        {/* Agent trace collapsible */}
-        {item.trace && (
-          <TraceCollapsible trace={item.trace} />
-        )}
+        {/* Agent trace */}
+        {item.trace && <TraceCollapsible trace={item.trace} />}
       </View>
     );
   };
 
   return (
-    <View className="flex-1 bg-gray-950">
-      {/* Header with gradient */}
-      <View className="bg-gradient-to-r from-gray-900 to-gray-800 border-b border-emerald-500/20 shadow-lg">
-        <View className="flex-row items-center justify-between px-4 py-4">
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <View style={styles.aiAvatar}>
+            <Feather name="cpu" size={20} color="#fff" />
+          </View>
           <View>
-            <Text className="text-2xl font-bold text-emerald-500">Karoo AI</Text>
-            <Text className="text-xs text-gray-400 mt-0.5">Powered by Google Gemini 🤖</Text>
+            <Text style={styles.headerTitle}>Karoo AI</Text>
+            <Text style={styles.headerSubtitle}>
+              Powered by Google Gemini
+            </Text>
           </View>
-          <View className="flex-row items-center gap-3">
-            <TouchableOpacity
-              onPress={handleClearHistory}
-              className="p-2 bg-red-500/10 rounded-lg"
-            >
-              <Feather name="trash-2" size={18} color="#ef4444" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleNewConversation}
-              className="p-2 bg-emerald-500/10 rounded-lg"
-            >
-              <Feather name="plus-circle" size={18} color="#10b981" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/(user)/notifications')}
-              className="relative"
-            >
-              <View className="p-2 bg-emerald-500/10 rounded-lg">
-                <Feather name="bell" size={20} color="#10b981" />
+        </View>
+
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            onPress={handleClearHistory}
+            style={styles.headerBtn}
+            accessibilityLabel="Clear chat history"
+          >
+            <Feather name="trash-2" size={18} color="#ef4444" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleNewConversation}
+            style={[styles.headerBtn, { marginLeft: 8 }]}
+            accessibilityLabel="New conversation"
+          >
+            <Feather name="plus-circle" size={18} color="#10b981" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/(user)/notifications')}
+            style={[styles.headerBtn, { marginLeft: 8 }]}
+            accessibilityLabel="Notifications"
+          >
+            <Feather name="bell" size={20} color="#10b981" />
+            {unreadCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{unreadCount}</Text>
               </View>
-              {unreadCount > 0 && (
-                <View className="absolute -right-1 -top-1 bg-red-500 rounded-full w-5 h-5 items-center justify-center border-2 border-gray-900">
-                  <Text className="text-xs text-white font-bold">{unreadCount}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          </View>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Message list */}
+      {/* Messages */}
       <FlatList
         ref={flatListRef}
         data={messages}
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
-        inverted={false}
-        contentContainerStyle={{ padding: 12 }}
+        contentContainerStyle={{ padding: 12, paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        onContentSizeChange={() =>
+          flatListRef.current?.scrollToEnd({ animated: true })
+        }
       />
 
-      {/* Input bar with gradient */}
-      <View className="bg-gradient-to-t from-gray-900 to-gray-800 border-t border-emerald-500/20 shadow-2xl">
-        <View className="flex-row items-center px-4 py-3 gap-2">
-          <TextInput
-            placeholder="Urdu ya English mein likhein..."
-            placeholderTextColor="#6b7280"
-            className="flex-1 bg-gray-800 rounded-2xl px-4 py-3 text-white text-base border border-gray-700 focus:border-emerald-500"
-            value={input}
-            onChangeText={setInput}
-            onSubmitEditing={handleSend}
-            multiline
-            maxLength={500}
-          />
-          <TouchableOpacity
-            className={`p-3 rounded-2xl ${loadingSend ? 'bg-gray-700' : 'bg-gradient-to-r from-emerald-600 to-emerald-500'} shadow-lg`}
-            onPress={handleSend}
-            disabled={loadingSend || !input.trim()}
-          >
-            {loadingSend ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <Feather name="send" size={22} color="#fff" />
-            )}
-          </TouchableOpacity>
-        </View>
-        <Text className="text-xs text-gray-500 text-center pb-2">
-          Powered by Google Gemini • Multilingual AI
-        </Text>
+      {/* Input bar */}
+      <View style={styles.inputBar}>
+        <TextInput
+          placeholder="Urdu ya English mein likhein..."
+          placeholderTextColor="#6b7280"
+          style={styles.input}
+          value={input}
+          onChangeText={setInput}
+          onSubmitEditing={handleSend}
+          multiline
+          maxLength={500}
+        />
+        <TouchableOpacity
+          style={[
+            styles.sendBtn,
+            { backgroundColor: input.trim() && !loadingSend ? '#059669' : '#374151' },
+          ]}
+          onPress={handleSend}
+          disabled={loadingSend || !input.trim()}
+          accessibilityLabel="Send message"
+        >
+          {loadingSend ? (
+            <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <Feather name="send" size={20} color="#fff" />
+          )}
+        </TouchableOpacity>
       </View>
+
+      <Text style={styles.poweredBy}>
+        Powered by Google Gemini • Multilingual AI
+      </Text>
     </View>
   );
 }
 
-// ---------- Trace Collapsible Component ----------
+// ---------- Trace Collapsible ----------
 function TraceCollapsible({ trace }: { trace: string }) {
   const [expanded, setExpanded] = useState(false);
-  const toggle = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded(!expanded);
-  };
+
   return (
-    <View className="mt-2">
-      <TouchableWithoutFeedback onPress={toggle}>
-        <View className="flex-row items-center">
-          <Feather name="search" size={16} color="#10b981" />
-          <Text className="ml-1 text-emerald-500">🔍 AI Reasoning dekho</Text>
+    <View style={{ marginTop: 8 }}>
+      <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Feather name="search" size={14} color="#10b981" />
+          <Text style={{ marginLeft: 4, color: '#10b981', fontSize: 13 }}>
+            AI Reasoning dekho
+          </Text>
         </View>
       </TouchableWithoutFeedback>
+
       {expanded && (
-        <ScrollView className="bg-gray-800 rounded-md p-2 mt-1 max-h-40">
-          <Text className="text-xs font-mono text-white">{trace}</Text>
+        <ScrollView
+          style={{
+            backgroundColor: '#1f2937',
+            borderRadius: 8,
+            padding: 8,
+            marginTop: 4,
+            maxHeight: 160,
+          }}
+        >
+          <Text style={{ fontSize: 11, color: '#e5e7eb', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>
+            {trace}
+          </Text>
         </ScrollView>
       )}
     </View>
   );
 }
+
+// ---------- Styles ----------
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#030712',
+  },
+  header: {
+    backgroundColor: '#111827',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(16,185,129,0.2)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  aiAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#059669',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  headerTitle: {
+    color: '#10b981',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    color: '#6b7280',
+    fontSize: 11,
+    marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerBtn: {
+    padding: 8,
+    backgroundColor: 'rgba(16,185,129,0.1)',
+    borderRadius: 8,
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#ef4444',
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#111827',
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  userMsgWrapper: {
+    alignSelf: 'flex-end',
+    maxWidth: '80%',
+    marginBottom: 12,
+    alignItems: 'flex-end',
+  },
+  userBubble: {
+    backgroundColor: '#059669',
+    borderRadius: 20,
+    borderBottomRightRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  userText: {
+    color: '#ffffff',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  userLabel: {
+    color: '#6b7280',
+    fontSize: 11,
+    marginTop: 4,
+  },
+  botMsgWrapper: {
+    alignSelf: 'flex-start',
+    maxWidth: '85%',
+    marginBottom: 12,
+  },
+  botBubble: {
+    backgroundColor: '#1f2937',
+    borderRadius: 20,
+    borderBottomLeftRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  botText: {
+    color: '#ffffff',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  botLabel: {
+    color: '#6b7280',
+    fontSize: 11,
+    marginTop: 4,
+  },
+  typingBubble: {
+    backgroundColor: '#1f2937',
+    borderRadius: 20,
+    borderBottomLeftRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  typingText: {
+    color: '#9ca3af',
+    fontSize: 13,
+    marginLeft: 8,
+  },
+  providersWrapper: {
+    marginTop: 10,
+  },
+  providersTitle: {
+    color: '#10b981',
+    fontWeight: '600',
+    fontSize: 13,
+    marginBottom: 6,
+  },
+  inputBar: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#111827',
+    borderTopWidth: 1,
+    borderTopColor: '#1f2937',
+    gap: 8,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#1f2937',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    color: '#ffffff',
+    fontSize: 15,
+    maxHeight: 120,
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  sendBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  poweredBy: {
+    color: '#4b5563',
+    fontSize: 11,
+    textAlign: 'center',
+    paddingBottom: 8,
+    backgroundColor: '#111827',
+  },
+});

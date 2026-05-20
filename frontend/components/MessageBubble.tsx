@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import ProviderCard from './ProviderCard'
 
 interface ProviderProps {
@@ -46,7 +47,7 @@ export default function MessageBubble({
     <View className={`flex-col mb-4 max-w-[85%] ${isUser ? 'self-end items-end' : 'self-start items-start'}`}>
       {/* Sender name label */}
       <Text className="text-[10px] text-gray-500 font-bold mb-1 px-1 uppercase tracking-wider">
-        {isUser ? 'Aap' : sender === 'provider' ? 'Provider' : 'Karoo AI 🤖'}
+        {isUser ? 'Aap' : sender === 'provider' ? 'Provider' : 'Karoo AI'}
       </Text>
 
       {/* Bubble Container */}
@@ -75,10 +76,13 @@ export default function MessageBubble({
             onPress={() => setTraceExpanded(!traceExpanded)}
             className="flex-row justify-between items-center px-3 py-2 bg-gray-850 border-b border-gray-800"
           >
-            <Text className="text-gray-400 font-bold text-xs flex-row items-center">
-              🔍 {traceExpanded ? 'AI Trace chupaen' : 'AI Trace dekho'}
-            </Text>
-            <Text className="text-gray-500 text-xs font-bold">{traceExpanded ? '▲' : '▼'}</Text>
+            <View className="flex-row items-center">
+              <Feather name="search" size={12} color="#9ca3af" style={{ marginRight: 4 }} />
+              <Text className="text-gray-400 font-bold text-xs">
+                {traceExpanded ? 'AI Trace chupaen' : 'AI Trace dekho'}
+              </Text>
+            </View>
+            <Feather name={traceExpanded ? 'chevron-up' : 'chevron-down'} size={14} color="#6b7280" />
           </TouchableOpacity>
 
           {traceExpanded && (

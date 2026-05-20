@@ -116,7 +116,7 @@ export default function ProviderEarningsScreen() {
             contentContainerStyle={{ paddingBottom: 24 }}
             ListEmptyComponent={
               <EmptyState
-                emoji="💰"
+                icon="dollar-sign"
                 title="Abhi koi earnings nahi hain"
                 subtitle="Complete kiye gaye bookings ki financial details yahan show honge."
               />

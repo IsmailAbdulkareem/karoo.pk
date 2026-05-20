@@ -132,7 +132,8 @@ async def _server_side_booking_flow(
                             pname = (p.get("users") or {}).get("name", "")
                             if pname and pname in content:
                                 # Check if this provider is mentioned first or with selection keyword
-                                if pname.lower() in msg_lower or msg_lower.index(pname.lower()) < 100:
+                                idx = msg_lower.find(pname.lower())
+                                if idx >= 0 and idx < 100:
                                     selected_provider = p
                                     break
                         if selected_provider:
@@ -181,7 +182,7 @@ async def _server_side_booking_flow(
                         "booking_id": booking_id
                     }
 
-    # Step 2: Check for new booking request
+    # Step 2: Check for new booking request (direct booking without prior provider display)
     has_booking_intent = any(kw in msg_lower for kw in BOOKING_INTENT_KEYWORDS)
     if has_booking_intent:
         service_type = _detect_service_type(message)
@@ -194,54 +195,50 @@ async def _server_side_booking_flow(
             providers = providers_result.data or []
 
             if providers:
-                # Format provider list
-                provider_text = f"🔍 **{service_type}** found in **{location}**:\n\n"
-                provider_objects = []
-                for i, p in enumerate(providers[:3], 1):
-                    pname = (p.get("users") or {}).get("name", "Unknown")
-                    rating = p.get("rating", 0)
-                    area = p.get("area", "")
-                    provider_text += f"{i}. **{pname}** ⭐{rating} - {area}\n"
-                    provider_objects.append(ProviderResult(
-                        id=p["id"],
-                        name=pname,
-                        service_type=p.get("service_type", ""),
-                        area=area,
-                        rating=rating,
-                        rate_per_hour=p.get("rate_per_hour"),
-                        is_available=p.get("is_available", True),
-                        bio=p.get("bio"),
-                        eta_minutes=p.get("eta_minutes"),
-                        match_score=p.get("match_score")
-                    ))
+                # Pick the first available provider (or could rank them)
+                selected_provider = providers[0]
+                scheduled_at = _detect_booking_time(message)
+                service_type = selected_provider.get("service_type", "")
+                location = selected_provider.get("area", "")
 
-                provider_text += f"\nBook karne ke liye provider ka naam ya number likhein!"
-
-                return {
-                    "reply": provider_text,
-                    "providers": provider_objects,
-                    "booking_created": False
-                }
-            else:
-                return {
-                    "reply": f"😔 Sorry, koi {service_type} available nahi hai {location} mein. Doosri area try karein.",
-                    "providers": [],
-                    "booking_created": False
+                booking_data = {
+                    "user_id": user_id,
+                    "provider_id": selected_provider["id"],
+                    "service_type": service_type,
+                    "location": location,
+                    "scheduled_at": scheduled_at,
+                    "booked_via": "chat",
+                    "status": "pending"
                 }
 
-        elif service_type and not location:
-            return {
-                "reply": f"📍 Kaunsi area mein {service_type} chahiye? (e.g., F11, G11, DHA, Bahria)",
-                "providers": [],
-                "booking_created": False
-            }
-        elif not service_type and location:
-            return {
-                "reply": f"🔧 Kaunsi service chahiye {location} mein? (electrician, plumber, ac technician, etc.)",
-                "providers": [],
-                "booking_created": False
-            }
+                result = supabase.table("bookings").insert(booking_data).execute()
+                if result.data:
+                    booking_id = result.data[0]["id"]
+                    provider_name = (selected_provider.get("users") or {}).get("name", "Provider")
 
+                    # Send notification
+                    try:
+                        from utils.notifications import notify_booking_created
+                        prov_user_id = selected_provider.get("user_id")
+                        user_res = supabase.table("users").select("name").eq("id", user_id).execute()
+                        user_name = user_res.data[0]["name"] if user_res.data else "User"
+                        if prov_user_id:
+                            import asyncio
+                            asyncio.ensure_future(notify_booking_created(
+                                booking_id, user_id, prov_user_id,
+                                provider_name, user_name, ""
+                            ))
+                    except Exception as e:
+                        print(f"[CHAT] Notification error: {e}")
+
+                    return {
+                        "reply": f"✅ **Booking Confirmed!**\n\nProvider: {provider_name}\nService: {service_type}\nTime: {scheduled_at}\n\nBooking ID: {booking_id}\n\nAapki booking confirm ho gayi hai!",
+                        "providers": [],
+                        "booking_created": True,
+                        "booking_id": booking_id
+                    }
+
+    # Step 3: If no booking intent, fall back to AI
     return None  # No booking intent, fall back to AI
 
 async def get_conversation_history(user_id: str, limit: int = 10) -> List[Dict[str, str]]:
@@ -273,6 +270,9 @@ async def chat(
     Maintains conversation context and uses MCP tools for geocoding and provider search.
     """
     try:
+        # Slice conversation history to last 6 messages as per requirement
+        # (will be applied after fetching history below)
+        pass
         # 1. Check role
         if current_user["role"] != "user":
             raise HTTPException(status_code=403, detail="Sirf users chat kar sakte hain")
@@ -333,7 +333,9 @@ async def chat(
                 reply=reply,
                 providers=providers,
                 needs_clarification=not server_booking_result.get("booking_created"),
-                agent_trace=tracer.to_string()
+                agent_trace=tracer.to_string(),
+                booking_created=server_booking_result.get("booking_created", False),
+                booking_id=server_booking_result.get("booking_id")
             )
 
         # 6. Fall back to AI agent
@@ -396,7 +398,7 @@ async def chat(
                     }
 
             # Fallback: AI said booked but didn't call create_booking
-            if not booking_info and "book" in reply.lower() and "error" not in reply.lower():
+            if not booking_info and reply and "book" in reply.lower() and "error" not in reply.lower():
                 fallback = await _try_create_booking_from_reply(reply, current_user["user_id"])
                 if fallback:
                     print(f"[CHAT] Server-side fallback booking created (tool branch): {fallback}")
@@ -440,7 +442,9 @@ async def chat(
                 reply=reply,
                 providers=[],
                 needs_clarification=True,  # Agent is asking for more info
-                agent_trace=tracer.to_string()
+                agent_trace=tracer.to_string(),
+                booking_created=False,
+                booking_id=None
             )
 
     except HTTPException:
@@ -453,25 +457,36 @@ async def chat(
 async def _try_create_booking_from_reply(reply: str, user_id: str) -> Optional[dict]:
     """When AI fakes a booking without calling create_booking, create it server-side."""
     try:
-        match = re.search(r'\*\*([^*]+)\*\*.*?book', reply)
-        if not match:
-            return None
-        candidate = match.group(1).strip()
-        providers = supabase.table("providers").select("id, users(name)").execute()
-        for p in providers.data or []:
-            uname = (p.get("users") or {}).get("name", "")
-            if uname and (uname.lower() in candidate.lower() or candidate.lower() in uname.lower()):
-                tomorrow = (datetime.utcnow() + timedelta(days=1)).strftime("%Y-%m-%dT10:00:00")
-                result = supabase.table("bookings").insert({
-                    "user_id": user_id, "provider_id": p["id"],
-                    "service_type": "", "location": "",
-                    "scheduled_at": tomorrow, "booked_via": "chat", "status": "pending"
-                }).execute()
-                if result.data:
-                    return {"booking_id": result.data[0]["id"], "provider_name": uname}
-                break
+        # Look for any provider name mentioned in the reply
+        try:
+            providers = supabase.table("providers").select("id, users(name)").execute()
+            if not providers.data:
+                return None
+
+            for p in providers.data or []:
+                try:
+                    uname = (p.get("users") or {}).get("name", "")
+                    if uname and uname.lower() in reply.lower():
+                        # Found a provider name in the reply
+                        tomorrow = (datetime.utcnow() + timedelta(days=1)).strftime("%Y-%m-%dT10:00:00")
+                        result = supabase.table("bookings").insert({
+                            "user_id": user_id,
+                            "provider_id": p["id"],
+                            "service_type": p.get("service_type", ""),
+                            "location": p.get("area", ""),
+                            "scheduled_at": tomorrow,
+                            "booked_via": "chat",
+                            "status": "pending"
+                        }).execute()
+                        if result.data:
+                            return {"booking_id": result.data[0]["id"], "provider_name": uname}
+                except Exception as e:
+                    print(f"[CHAT] Individual provider booking error: {e}")
+                    continue
+        except Exception as e:
+            print(f"[CHAT] Providers lookup error: {e}")
     except Exception as e:
-        print(f"[CHAT] Fallback booking error: {e}")
+        print(f"[CHAT] Critical fallback booking error: {e}")
     return None
 
 

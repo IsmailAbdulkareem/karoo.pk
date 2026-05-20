@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, Alert } from
 import { requestsAPI } from '../../lib/api'
 import EmptyState from '../../components/EmptyState'
 import { router } from 'expo-router'
+import { Feather } from '@expo/vector-icons'
 import type { ServiceRequest } from '../../lib/types'
 
 type FilterType = 'all' | 'mine'
@@ -101,18 +102,22 @@ export default function ProviderRequestsScreen() {
       <View className="flex-row bg-gray-900 border border-gray-800 p-1.5 rounded-xl mb-5">
         <TouchableOpacity
           onPress={() => setFilter('all')}
-          className={`flex-1 py-3 rounded-lg items-center ${filter === 'all' ? 'bg-emerald-500' : 'bg-transparent'}`}
+          accessibilityRole="button"
+          accessibilityLabel="Show all requests"
+          className={`flex-1 py-4 rounded-lg items-center ${filter === 'all' ? 'bg-emerald-500' : 'bg-transparent'}`}
         >
           <Text className={`font-bold text-xs ${filter === 'all' ? 'text-white' : 'text-gray-400'}`}>
-            Sab Requests 🌐
+            Sab Requests
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setFilter('mine')}
-          className={`flex-1 py-3 rounded-lg items-center ${filter === 'mine' ? 'bg-emerald-500' : 'bg-transparent'}`}
+          accessibilityRole="button"
+          accessibilityLabel="Show matching requests"
+          className={`flex-1 py-4 rounded-lg items-center ${filter === 'mine' ? 'bg-emerald-500' : 'bg-transparent'}`}
         >
           <Text className={`font-bold text-xs ${filter === 'mine' ? 'text-white' : 'text-gray-400'}`}>
-            Matching Hunur 🎯
+            Matching Hunur
           </Text>
         </TouchableOpacity>
       </View>
@@ -144,14 +149,20 @@ export default function ProviderRequestsScreen() {
 
               <View className="bg-gray-850 rounded-xl p-3 border border-gray-800 space-y-2 mb-4">
                 <View className="flex-row justify-between">
-                  <Text className="text-gray-500 text-xs font-bold">📍 Location:</Text>
+                  <View className="flex-row items-center">
+                    <Feather name="map-pin" size={12} color="#6b7280" />
+                    <Text className="text-gray-500 text-xs font-bold ml-1">Location:</Text>
+                  </View>
                   <Text className="text-white text-xs font-medium text-right flex-1 ml-4" numberOfLines={1}>
                     {item.location}
                   </Text>
                 </View>
                 {item.scheduled_at && (
                   <View className="flex-row justify-between">
-                    <Text className="text-gray-500 text-xs font-bold">📅 Schedule:</Text>
+                    <View className="flex-row items-center">
+                      <Feather name="calendar" size={12} color="#6b7280" />
+                      <Text className="text-gray-500 text-xs font-bold ml-1">Schedule:</Text>
+                    </View>
                     <Text className="text-white text-xs font-semibold">
                       {new Date(item.scheduled_at).toLocaleString()}
                     </Text>
@@ -159,7 +170,10 @@ export default function ProviderRequestsScreen() {
                 )}
                 {item.budget && (
                   <View className="flex-row justify-between">
-                    <Text className="text-gray-500 text-xs font-bold">💰 Offer/Budget:</Text>
+                    <View className="flex-row items-center">
+                      <Feather name="dollar-sign" size={12} color="#6b7280" />
+                      <Text className="text-gray-500 text-xs font-bold ml-1">Offer/Budget:</Text>
+                    </View>
                     <Text className="text-emerald-400 text-xs font-extrabold">PKR {item.budget}</Text>
                   </View>
                 )}
@@ -173,9 +187,12 @@ export default function ProviderRequestsScreen() {
 
               <TouchableOpacity
                 onPress={() => handleAcceptRequest(item.id)}
-                className="w-full bg-emerald-500 py-3 rounded-xl items-center shadow-lg shadow-emerald-500/10"
+                accessibilityRole="button"
+                accessibilityLabel="Accept this work request"
+                className="w-full bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/10 flex-row justify-center"
               >
-                <Text className="text-white font-bold text-sm">Yeh Kaam Loon ✅</Text>
+                <Feather name="check" size={16} color="#fff" />
+                <Text className="text-white font-bold text-sm ml-2">Yeh Kaam Loon</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -185,7 +202,7 @@ export default function ProviderRequestsScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <EmptyState
-              emoji="📋"
+              icon="clipboard"
               title="Koi open request nahi hai"
               subtitle="Is waqt marketplace mein koi open job active nahi hai. Dobara refresh karein."
             />

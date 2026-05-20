@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } fr
 import { useLocalSearchParams, router } from 'expo-router'
 import { bookingsAPI, conversationsAPI } from '../../lib/api'
 import { storage } from '../../lib/storage'
+import { Feather } from '@expo/vector-icons'
 
 export default function BookingDetailsScreen() {
   const { id } = useLocalSearchParams()
@@ -223,17 +224,22 @@ export default function BookingDetailsScreen() {
         <Text className="text-white font-black text-lg mb-1">
           {isUser ? booking.provider_name || 'Provider Partner' : booking.user_name || 'Customer Partner'}
         </Text>
-        <Text className="text-gray-400 text-xs mb-3">
-          📞 {isUser ? booking.provider_phone || 'Verified Phone' : booking.user_phone || 'Verified Phone'}
-        </Text>
+        <View className="flex-row items-center mb-3">
+          <Feather name="phone" size={14} color="#9ca3af" />
+          <Text className="text-gray-400 text-xs ml-2">
+            {isUser ? booking.provider_phone || 'Verified Phone' : booking.user_phone || 'Verified Phone'}
+          </Text>
+        </View>
 
         {booking.status === 'accepted' && (
           <TouchableOpacity
             onPress={handleOpenChat}
-            className="w-full bg-emerald-500 py-3 rounded-xl items-center shadow-lg shadow-emerald-500/10 flex-row justify-center space-x-2"
+            accessibilityRole="button"
+            accessibilityLabel="Open direct chat with partner"
+            className="w-full bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/10 flex-row justify-center space-x-2"
           >
-            <Text className="text-lg">💬</Text>
-            <Text className="text-white font-bold text-sm">Direct Chat Kholien</Text>
+            <Feather name="message-circle" size={20} color="#fff" />
+            <Text className="text-white font-bold text-sm ml-2">Direct Chat Kholien</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -246,14 +252,18 @@ export default function BookingDetailsScreen() {
             {(booking.status === 'pending' || booking.status === 'accepted') && (
               <TouchableOpacity
                 onPress={handleCancel}
+                accessibilityRole="button"
+                accessibilityLabel="Cancel this booking"
                 className="w-full bg-red-500/10 border border-red-500/30 py-4 rounded-xl items-center mb-3"
               >
-                <Text className="text-red-400 font-bold text-base">Booking Cancel Karo ❌</Text>
+                <Text className="text-red-400 font-bold text-base">Booking Cancel Karo</Text>
               </TouchableOpacity>
             )}
 
             {booking.status === 'completed' && (
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="Rate your experience with the provider"
                 onPress={() =>
                   router.push({
                     pathname: '/rating/provider',
@@ -266,7 +276,7 @@ export default function BookingDetailsScreen() {
                 }
                 className="w-full bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/20 mb-3"
               >
-                <Text className="text-white font-bold text-base">Rate Your Experience ⭐</Text>
+                <Text className="text-white font-bold text-base">Rate Your Experience</Text>
               </TouchableOpacity>
             )}
           </>
@@ -277,15 +287,19 @@ export default function BookingDetailsScreen() {
               <View className="flex-row space-x-3 mb-3">
                 <TouchableOpacity
                   onPress={handleReject}
-                  className="flex-1 border border-red-500/30 py-3.5 rounded-xl bg-red-500/5 items-center justify-center mr-2"
+                  accessibilityRole="button"
+                  accessibilityLabel="Reject this booking"
+                  className="flex-1 border border-red-500/30 py-4 rounded-xl bg-red-500/5 items-center justify-center mr-2"
                 >
-                  <Text className="text-red-400 font-bold text-base">Reject ❌</Text>
+                  <Text className="text-red-400 font-bold text-base">Reject</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleAccept}
-                  className="flex-1 bg-emerald-505 py-3.5 rounded-xl bg-emerald-500 items-center justify-center"
+                  accessibilityRole="button"
+                  accessibilityLabel="Accept this booking"
+                  className="flex-1 bg-emerald-500 py-4 rounded-xl items-center justify-center"
                 >
-                  <Text className="text-white font-bold text-base">Accept ✅</Text>
+                  <Text className="text-white font-bold text-base">Accept</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -293,14 +307,18 @@ export default function BookingDetailsScreen() {
             {booking.status === 'accepted' && (
               <TouchableOpacity
                 onPress={handleComplete}
+                accessibilityRole="button"
+                accessibilityLabel="Mark this booking as complete"
                 className="w-full bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/20 mb-3"
               >
-                <Text className="text-white font-bold text-base">Complete Mark Karo 🏁</Text>
+                <Text className="text-white font-bold text-base">Complete Mark Karo</Text>
               </TouchableOpacity>
             )}
 
             {booking.status === 'completed' && (
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="Rate the customer partner"
                 onPress={() =>
                   router.push({
                     pathname: '/rating/user',
@@ -313,7 +331,7 @@ export default function BookingDetailsScreen() {
                 }
                 className="w-full bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/20 mb-3"
               >
-                <Text className="text-white font-bold text-base">Rate Customer Partner ⭐</Text>
+                <Text className="text-white font-bold text-base">Rate Customer Partner</Text>
               </TouchableOpacity>
             )}
           </>

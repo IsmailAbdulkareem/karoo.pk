@@ -1,6 +1,7 @@
 import { Tabs, useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { Text, View, ActivityIndicator } from 'react-native'
+import { View, ActivityIndicator } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import { storage } from '../../lib/storage'
 
 export default function ProviderLayout() {
@@ -74,42 +75,42 @@ export default function ProviderLayout() {
         name="dashboard"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>📊</Text>,
+          tabBarIcon: ({ color }) => <Feather name="grid" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="requests"
         options={{
           title: 'Marketplace',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>📋</Text>,
+          tabBarIcon: ({ color }) => <Feather name="shopping-bag" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="bookings"
         options={{
           title: 'Bookings',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>📅</Text>,
+          tabBarIcon: ({ color }) => <Feather name="calendar" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="earnings"
         options={{
           title: 'Earnings',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>💰</Text>,
+          tabBarIcon: ({ color }) => <Feather name="trending-up" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: 'Partner AI',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>🤖</Text>,
+          tabBarIcon: ({ color }) => <Feather name="message-square" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
           title: 'Alerts',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>🔔</Text>,
+          tabBarIcon: ({ color }) => <Feather name="bell" size={22} color={color} />,
           headerShown: false,
         }}
       />

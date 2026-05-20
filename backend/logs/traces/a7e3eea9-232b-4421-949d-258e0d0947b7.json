@@ -1,0 +1,94 @@
+{
+  "session_id": "a7e3eea9-232b-4421-949d-258e0d0947b7",
+  "timestamp": "2026-05-20T06:11:08.143062",
+  "user_id": "abe95488-a31a-4900-988c-66408a952e8c",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "abe95488-a31a-4900-988c-66408a952e8c",
+      "output": "10 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! \ud83d\ude0a Kaise ho? Kya koi service chahiye ya bas gupshup karni hai?"
+        },
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Waah, double hello! \ud83d\ude04 Kya aapko koi service chahiye? Jaise plumber, electrician, ya koi aur? Batayein, phir aage badhte hain."
+        },
+        {
+          "role": "user",
+          "content": "yes i need electrician"
+        },
+        {
+          "role": "assistant",
+          "content": "Electrician ke liye aap kis location (area) mein service chahte hain? \u0645\u062b\u0644\u0627\u064b G\u201111, DHA, Gulshan\u2011e\u2011Iqbal etc."
+        },
+        {
+          "role": "user",
+          "content": "DHA"
+        },
+        {
+          "role": "assistant",
+          "content": "Yahan aapke liye kuch electrician options hain (sab available hain):\n\n| # | Naam | Area | Rating | Rate per hour (PKR) | Bio |\n|---|------|------|--------|----------------------|-----|\n| 1 | **Bilal Electrician** | F-11 | \u2b50\ufe0f 4.8 | 650 | Home wiring & repairs specialist |\n| 2 | **Ahmed Electrician** | G-10 | \u2b50\ufe0f 4.2 | 500 | 5\u202fyears ka tajurba |\n| 3 | **Danish Electrician** | I-8 | \u2b50\ufe0f 4.2 | 450 | Affordable, sab types ka kaam |\n\nAap inme se koi select karna chahenge? Bas number batayein ya \u201cbook\u202f#1\u201d likhein. \ud83d\ude80"
+        },
+        {
+          "role": "user",
+          "content": "f 11 islamabad"
+        },
+        {
+          "role": "user",
+          "content": "bhai kia hua provider dekao"
+        }
+      ],
+      "output": {
+        "service_type": "electrician",
+        "location": "islamabad"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 16708,
+    "outcome": "SUCCESS"
+  }
+}

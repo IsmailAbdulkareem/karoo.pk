@@ -138,7 +138,10 @@ export default function BookingConfirm() {
         {/* Estimated Price */}
         {estimated_price && (
           <View className="bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 rounded-2xl p-5 mb-6 border border-emerald-500/30">
-            <Text className="text-gray-400 text-sm mb-2">💰 Estimated Total</Text>
+            <View className="flex-row items-center mb-2">
+              <Feather name="dollar-sign" size={16} color="#10b981" />
+              <Text className="text-gray-400 text-sm ml-2">Estimated Total</Text>
+            </View>
             <Text className="text-white text-4xl font-bold">Rs. {estimated_price}</Text>
             <Text className="text-emerald-400 text-xs mt-2">✨ AI-powered transparent pricing</Text>
           </View>
@@ -146,23 +149,33 @@ export default function BookingConfirm() {
 
         {/* Urgency Selector */}
         <View className="mb-6">
-          <Text className="text-white text-base font-semibold mb-3">⚡ Urgency Level</Text>
+          <View className="flex-row items-center mb-3">
+            <Feather name="zap" size={16} color="#10b981" />
+            <Text className="text-white text-base font-semibold ml-2">Urgency Level</Text>
+          </View>
           <View className="flex-row gap-2">
             {(['normal', 'urgent', 'emergency'] as const).map((level) => (
               <TouchableOpacity
                 key={level}
                 onPress={() => setUrgency(level)}
-                className={`flex-1 py-3 rounded-xl border ${
+                accessibilityRole="button"
+                accessibilityLabel={`Select ${level} urgency`}
+                className={`flex-1 py-4 rounded-xl border ${
                   urgency === level
                     ? 'bg-emerald-500/20 border-emerald-500'
                     : 'bg-gray-800 border-gray-700'
                 }`}
               >
-                <Text className={`text-center font-semibold ${
-                  urgency === level ? 'text-emerald-400' : 'text-gray-400'
-                }`}>
-                  {level === 'normal' ? '🟢 Normal' : level === 'urgent' ? '🟡 Urgent' : '🔴 Emergency'}
-                </Text>
+                <View className="flex-row items-center justify-center">
+                  <View className={`w-3 h-3 rounded-full mr-2 ${
+                    level === 'normal' ? 'bg-green-500' : level === 'urgent' ? 'bg-yellow-500' : 'bg-red-500'
+                  }`} />
+                  <Text className={`text-center font-semibold ${
+                    urgency === level ? 'text-emerald-400' : 'text-gray-400'
+                  }`}>
+                    {level === 'normal' ? 'Normal' : level === 'urgent' ? 'Urgent' : 'Emergency'}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -171,7 +184,10 @@ export default function BookingConfirm() {
         {/* Input Form */}
         <View className="space-y-5">
           <View>
-            <Text className="text-white text-base font-semibold mb-2">📍 Location</Text>
+            <View className="flex-row items-center mb-2">
+              <Feather name="map-pin" size={16} color="#10b981" />
+              <Text className="text-white text-base font-semibold ml-2">Location</Text>
+            </View>
             <TextInput
               placeholder="Enter your address (e.g., F-10 Islamabad)"
               placeholderTextColor="#6b7280"
@@ -185,12 +201,18 @@ export default function BookingConfirm() {
               }}
             />
             {locationError && (
-              <Text className="text-red-400 text-sm mt-2 ml-2">⚠️ {locationError}</Text>
+              <View className="flex-row items-center mt-2 ml-2">
+                <Feather name="alert-circle" size={14} color="#f87171" />
+                <Text className="text-red-400 text-sm ml-1">{locationError}</Text>
+              </View>
             )}
           </View>
 
           <View>
-            <Text className="text-white text-base font-semibold mb-2">📅 Scheduled Time</Text>
+            <View className="flex-row items-center mb-2">
+              <Feather name="calendar" size={16} color="#10b981" />
+              <Text className="text-white text-base font-semibold ml-2">Scheduled Time</Text>
+            </View>
             <DateTimePicker
               value={scheduledTime}
               onChange={(value) => {
@@ -203,7 +225,10 @@ export default function BookingConfirm() {
           </View>
 
           <View>
-            <Text className="text-white text-base font-semibold mb-2">💬 Additional Notes (Optional)</Text>
+            <View className="flex-row items-center mb-2">
+              <Feather name="message-circle" size={16} color="#10b981" />
+              <Text className="text-white text-base font-semibold ml-2">Additional Notes (Optional)</Text>
+            </View>
             <TextInput
               placeholder="Any special requirements or instructions..."
               placeholderTextColor="#6b7280"
@@ -217,7 +242,10 @@ export default function BookingConfirm() {
           </View>
 
           <View>
-            <Text className="text-white text-base font-semibold mb-2">💵 Your Budget (Optional)</Text>
+            <View className="flex-row items-center mb-2">
+              <Feather name="dollar-sign" size={16} color="#10b981" />
+              <Text className="text-white text-base font-semibold ml-2">Your Budget (Optional)</Text>
+            </View>
             <TextInput
               placeholder="Enter your budget in PKR"
               placeholderTextColor="#6b7280"
@@ -226,9 +254,12 @@ export default function BookingConfirm() {
               value={budget}
               onChangeText={setBudget}
             />
-            <Text className="text-gray-500 text-xs mt-2 ml-2">
-              💡 This helps us match you with the right provider
-            </Text>
+            <View className="flex-row items-center mt-2 ml-2">
+              <Feather name="info" size={12} color="#6b7280" />
+              <Text className="text-gray-500 text-xs ml-1">
+                This helps us match you with the right provider
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -236,6 +267,8 @@ export default function BookingConfirm() {
         <TouchableOpacity
           onPress={handleBook}
           disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel="Confirm booking"
           className={`rounded-2xl py-4 px-6 mt-8 flex-row justify-center items-center shadow-lg ${
             loading ? 'bg-gray-700' : 'bg-gradient-to-r from-emerald-600 to-emerald-500'
           }`}

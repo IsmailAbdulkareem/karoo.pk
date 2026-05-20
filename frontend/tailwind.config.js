@@ -1,6 +1,6 @@
+// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
     './app/**/*.{js,jsx,ts,tsx}',
     './components/**/*.{js,jsx,ts,tsx}',
@@ -9,9 +9,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        emerald: {
-          400: '#34d399',
-          500: '#10b981',
+        gray: {
+          850: '#1a1d2e',
         },
       },
     },

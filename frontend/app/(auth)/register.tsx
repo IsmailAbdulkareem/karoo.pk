@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { router } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { auth } from '@/lib/auth';
 import { validatePhone, validatePassword, validateName, validateEmail, validateServiceType, validateRate, validateLocation } from '@/lib/validation';
 
@@ -15,8 +16,9 @@ export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [city, setCity] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
   // Provider‑only fields
   const [serviceType, setServiceType] = useState('');
   const [area, setArea] = useState('');
@@ -109,11 +111,8 @@ export default function RegisterScreen() {
         payload.bio = bio || undefined;
       }
       await auth.register(payload);
-      // auth.register redirects based on role
     } catch (e: any) {
-      const errorMsg = e.message || 'Registration mein masla aa gaya. Dobara try karein.';
-      setError(errorMsg);
-      Alert.alert('Registration Failed', errorMsg);
+      setError(e.message || 'Registration mein masla aa gaya. Dobara try karein.');
     } finally {
       setLoading(false);
     }
@@ -132,16 +131,26 @@ export default function RegisterScreen() {
       {/* Role selector */}
       <View className="flex-row mb-4 space-x-4">
         <TouchableOpacity
-          className={`px-4 py-2 rounded-xl ${role === 'user' ? 'bg-emerald-500' : 'bg-gray-800'} `}
+          className={`px-4 py-3 rounded-xl ${role === 'user' ? 'bg-emerald-500' : 'bg-gray-800'} `}
           onPress={() => setRole('user')}
+          accessibilityRole="button"
+          accessibilityLabel="User role"
         >
-          <Text className="text-white">👤 User</Text>
+          <View className="flex-row items-center">
+            <Feather name="user" size={16} color="#fff" />
+            <Text className="text-white ml-2">User</Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
-          className={`px-4 py-2 rounded-xl ${role === 'provider' ? 'bg-emerald-500' : 'bg-gray-800'} `}
+          className={`px-4 py-3 rounded-xl ${role === 'provider' ? 'bg-emerald-500' : 'bg-gray-800'} `}
           onPress={() => setRole('provider')}
+          accessibilityRole="button"
+          accessibilityLabel="Provider role"
         >
-          <Text className="text-white">🔧 Provider</Text>
+          <View className="flex-row items-center">
+            <Feather name="tool" size={16} color="#fff" />
+            <Text className="text-white ml-2">Provider</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -150,7 +159,7 @@ export default function RegisterScreen() {
         <TextInput
           placeholder="Name"
           placeholderTextColor="#9ca3af"
-          className={`bg-gray-800 rounded-xl p-3 text-white ${nameError ? 'border border-red-500' : ''}`}
+          className={`bg-gray-800 rounded-xl p-4 text-white ${nameError ? 'border border-red-500' : ''}`}
           value={name}
           onChangeText={(text) => {
             setName(text);
@@ -165,7 +174,7 @@ export default function RegisterScreen() {
           placeholder="Phone (e.g. 03001234567)"
           keyboardType="phone-pad"
           placeholderTextColor="#9ca3af"
-          className={`bg-gray-800 rounded-xl p-3 text-white ${phoneError ? 'border border-red-500' : ''}`}
+          className={`bg-gray-800 rounded-xl p-4 text-white ${phoneError ? 'border border-red-500' : ''}`}
           value={phone}
           onChangeText={(text) => {
             setPhone(text);
@@ -176,17 +185,27 @@ export default function RegisterScreen() {
       </View>
 
       <View className="mb-4">
-        <TextInput
-          placeholder="Password (min 6 characters)"
-          secureTextEntry
-          placeholderTextColor="#9ca3af"
-          className={`bg-gray-800 rounded-xl p-3 text-white ${passwordError ? 'border border-red-500' : ''}`}
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            setPasswordError(null);
-          }}
-        />
+        <View className="relative">
+          <TextInput
+            placeholder="Password (min 6 characters)"
+            secureTextEntry={!showPassword}
+            placeholderTextColor="#9ca3af"
+            className={`bg-gray-800 rounded-xl p-4 text-white pr-12 ${passwordError ? 'border border-red-500' : ''}`}
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              setPasswordError(null);
+            }}
+            accessibilityLabel="Password"
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-0 bottom-0 justify-center"
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+          >
+            <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#9ca3af" />
+          </TouchableOpacity>
+        </View>
         {passwordError && <Text className="text-red-400 text-xs mt-1 ml-2">{passwordError}</Text>}
       </View>
 
@@ -195,7 +214,7 @@ export default function RegisterScreen() {
           placeholder="Email (optional)"
           keyboardType="email-address"
           placeholderTextColor="#9ca3af"
-          className={`bg-gray-800 rounded-xl p-3 text-white ${emailError ? 'border border-red-500' : ''}`}
+          className={`bg-gray-800 rounded-xl p-4 text-white ${emailError ? 'border border-red-500' : ''}`}
           value={email}
           onChangeText={(text) => {
             setEmail(text);
@@ -209,9 +228,10 @@ export default function RegisterScreen() {
         <TextInput
           placeholder="City (optional)"
           placeholderTextColor="#9ca3af"
-          className="bg-gray-800 rounded-xl p-3 text-white"
+          className="bg-gray-800 rounded-xl p-4 text-white"
           value={city}
           onChangeText={setCity}
+          accessibilityLabel="City"
         />
       </View>
 
@@ -234,7 +254,7 @@ export default function RegisterScreen() {
             <TextInput
               placeholder="Area / neighbourhood"
               placeholderTextColor="#9ca3af"
-              className={`bg-gray-800 rounded-xl p-3 text-white ${areaError ? 'border border-red-500' : ''}`}
+              className={`bg-gray-800 rounded-xl p-4 text-white ${areaError ? 'border border-red-500' : ''}`}
               value={area}
               onChangeText={(text) => {
                 setArea(text);
@@ -249,7 +269,7 @@ export default function RegisterScreen() {
               placeholder="Rate per hour (PKR)"
               keyboardType="numeric"
               placeholderTextColor="#9ca3af"
-              className={`bg-gray-800 rounded-xl p-3 text-white ${rateError ? 'border border-red-500' : ''}`}
+              className={`bg-gray-800 rounded-xl p-4 text-white ${rateError ? 'border border-red-500' : ''}`}
               value={ratePerHour}
               onChangeText={(text) => {
                 setRatePerHour(text);
@@ -263,7 +283,7 @@ export default function RegisterScreen() {
             <TextInput
               placeholder="Short bio (optional)"
               placeholderTextColor="#9ca3af"
-              className="bg-gray-800 rounded-xl p-3 text-white h-24"
+              className="bg-gray-800 rounded-xl p-4 text-white h-24"
               multiline
               value={bio}
               onChangeText={setBio}
@@ -273,9 +293,11 @@ export default function RegisterScreen() {
       )}
 
       <TouchableOpacity
-        className="bg-emerald-500 rounded-xl py-3 px-6 w-full items-center mb-4"
+        className="bg-emerald-500 rounded-xl py-4 px-6 w-full items-center mb-4"
         onPress={handleRegister}
         disabled={loading}
+        accessibilityRole="button"
+        accessibilityLabel="Register account"
       >
         {loading ? (
           <ActivityIndicator color="#fff" />

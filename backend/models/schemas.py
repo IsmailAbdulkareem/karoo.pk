@@ -60,6 +60,8 @@ class ChatResponse(BaseModel):
     providers: List[ProviderResult] = []
     needs_clarification: bool = False
     agent_trace: str = ""
+    booking_created: bool = False
+    booking_id: Optional[str] = None
 
 class ProviderChatRequest(BaseModel):
     message: str

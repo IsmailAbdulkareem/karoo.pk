@@ -133,7 +133,7 @@ export default function ProviderNotificationsScreen() {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => handleAcceptBooking(item.ref_id)}
-                      className="flex-1 bg-emerald-505 py-2 rounded-lg items-center bg-emerald-500"
+                      className="flex-1 bg-emerald-500 py-2 rounded-lg items-center"
                     >
                       <Text className="text-white font-bold text-xs">Accept ✅</Text>
                     </TouchableOpacity>
@@ -148,7 +148,7 @@ export default function ProviderNotificationsScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <EmptyState
-              emoji="🔔"
+              icon="bell"
               title="Koi notification nahi"
               subtitle="Naye orders aur status updates ki notifications yahan milengi."
             />

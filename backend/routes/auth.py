@@ -3,9 +3,26 @@ from passlib.context import CryptContext
 from models.schemas import UserRegister, UserLogin, TokenResponse
 from db.supabase_client import supabase
 from utils.jwt_handler import create_token, get_current_user
+import hashlib
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    try:
+        return pwd_context.hash(password[:72])
+    except Exception:
+        return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_password(password: str, password_hash: str) -> bool:
+    # Check if it's a bcrypt hash ($2b$ prefix)
+    if password_hash.startswith("$2"):
+        try:
+            return pwd_context.verify(password[:72], password_hash)
+        except Exception:
+            return False
+    # SHA256 fallback
+    return hashlib.sha256(password.encode()).hexdigest() == password_hash
 
 @router.post("/register", response_model=TokenResponse)
 async def register(user: UserRegister):
@@ -19,8 +36,8 @@ async def register(user: UserRegister):
         if existing.data:
             raise HTTPException(status_code=400, detail="Yeh phone already registered hai")
 
-        # Hash password (truncate to 72 bytes for bcrypt)
-        password_hash = pwd_context.hash(user.password[:72])
+        # Hash password
+        password_hash = hash_password(user.password)
 
         # Insert user
         user_data = {
@@ -81,7 +98,7 @@ async def login(credentials: UserLogin):
         user = result.data[0]
 
         # Verify password
-        if not pwd_context.verify(credentials.password, user["password_hash"]):
+        if not verify_password(credentials.password, user["password_hash"]):
             raise HTTPException(status_code=401, detail="Password galat hai")
 
         # Create JWT token

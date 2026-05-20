@@ -1,16 +1,19 @@
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
+import { Platform } from 'react-native'
 import "../global.css";
 
 export default function RootLayout() {
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style={Platform.OS === 'web' ? 'dark' : 'light'} />
       <Stack screenOptions={{
         headerStyle: { backgroundColor: '#030712' },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: 'bold' },
-        contentStyle: { backgroundColor: '#030712' },
+        contentStyle: { 
+          backgroundColor: '#030712' 
+        },
       }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/login" options={{ title: 'Login', headerShown: false }} />

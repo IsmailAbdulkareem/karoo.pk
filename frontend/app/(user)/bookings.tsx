@@ -1,10 +1,11 @@
 // app/(user)/bookings.tsx – User bookings screen with tabs and pull‑to‑refresh
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, Text, View, Alert, TouchableOpacity } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { bookingsAPI } from '../../lib/api';
 import { BookingCard } from '../../components/BookingCard';
 import { Feather } from '@expo/vector-icons';
+
 
 // Tab identifiers
 type Tab = 'active' | 'completed' | 'cancelled';
@@ -47,16 +48,32 @@ export default function UserBookingsScreen() {
   });
 
   const renderItem = ({ item }: { item: any }) => (
-    <BookingCard booking={item} onPress={() => {
-      // For confirmed/completed bookings, navigate to details (future screen)
-      router.push(`/booking/${item.id}`);
-    }} />
+    <BookingCard 
+      booking={item} 
+      onPress={() => router.push(`/booking/${item.id}`)} 
+    />
   );
+
+  const getTabIcon = (tab: Tab) => {
+    if (tab === 'active') return 'clock';
+    if (tab === 'completed') return 'check-circle';
+    return 'x-circle';
+  };
+
+  const getTabCount = (tab: Tab) => {
+    return bookings.filter((b) => {
+      const status = b.status?.toLowerCase();
+      if (tab === 'active') return status === 'pending' || status === 'confirmed';
+      if (tab === 'completed') return status === 'completed';
+      if (tab === 'cancelled') return status === 'cancelled';
+      return false;
+    }).length;
+  };
 
   return (
     <View className="flex-1 bg-gray-950">
       {/* Header */}
-      <View className="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-6 border-b border-emerald-500/20">
+      <View className="bg-gray-900 px-6 py-6 border-b border-emerald-500/20">
         <Text className="text-3xl font-bold text-white mb-2">My Bookings</Text>
         <Text className="text-gray-400">Track your service requests</Text>
       </View>
@@ -66,43 +83,30 @@ export default function UserBookingsScreen() {
         <View className="flex-row bg-gray-800 rounded-xl p-1 mb-4 border border-gray-700">
           {(['active', 'completed', 'cancelled'] as Tab[]).map((tab) => {
             const isActive = selectedTab === tab;
-            const getIcon = () => {
-              if (tab === 'active') return 'clock';
-              if (tab === 'completed') return 'check-circle';
-              return 'x-circle';
-            };
-            const getCount = () => {
-              return bookings.filter((b) => {
-                const status = b.status?.toLowerCase();
-                if (tab === 'active') return status === 'pending' || status === 'confirmed';
-                if (tab === 'completed') return status === 'completed';
-                if (tab === 'cancelled') return status === 'cancelled';
-                return false;
-              }).length;
-            };
+            const count = getTabCount(tab);
 
             return (
               <TouchableOpacity
                 key={tab}
                 onPress={() => setSelectedTab(tab)}
                 className={`flex-1 py-3 rounded-lg flex-row items-center justify-center ${
-                  isActive ? 'bg-gradient-to-r from-emerald-600 to-emerald-500' : 'bg-transparent'
+                  isActive ? 'bg-emerald-600' : 'bg-transparent'
                 }`}
               >
                 <Feather
-                  name={getIcon() as any}
+                  name={getTabIcon(tab) as any}
                   size={16}
                   color={isActive ? '#fff' : '#9ca3af'}
                 />
                 <Text className={`ml-2 font-bold text-sm ${isActive ? 'text-white' : 'text-gray-400'}`}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </Text>
-                {getCount() > 0 && (
+                {count > 0 && (
                   <View className={`ml-1.5 px-2 py-0.5 rounded-full ${
                     isActive ? 'bg-white/20' : 'bg-gray-700'
                   }`}>
                     <Text className={`text-xs font-bold ${isActive ? 'text-white' : 'text-gray-400'}`}>
-                      {getCount()}
+                      {count}
                     </Text>
                   </View>
                 )}

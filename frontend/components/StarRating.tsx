@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
 interface StarRatingProps {
   rating: number
@@ -19,34 +20,38 @@ export default function StarRating({
   const stars = Array.from({ length: maxStars }, (_, i) => i + 1)
 
   return (
-    <View className="flex-row items-center space-x-1">
+    <View className="flex-row items-center" style={{ gap: 2 }}>
       {stars.map((star) => {
         const isFilled = star <= rating
-        const starChar = isFilled ? '★' : '☆'
-        const color = isFilled ? 'text-amber-400' : 'text-gray-600'
+        const color = isFilled ? '#fbbf24' : '#4b5563'
 
         if (interactive && onRatingChange) {
           return (
             <TouchableOpacity
               key={star}
               onPress={() => onRatingChange(star)}
-              className="px-1"
+              accessibilityRole="button"
+              accessibilityLabel={`${star} star${star > 1 ? 's' : ''}`}
+              hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
             >
-              <Text style={{ fontSize: size * 1.5 }} className={`${color} font-bold`}>
-                {starChar}
-              </Text>
+              <Feather
+                name={isFilled ? 'star' : 'star'}
+                size={size}
+                color={color}
+                style={isFilled ? {} : { opacity: 0.4 }}
+              />
             </TouchableOpacity>
           )
         }
 
         return (
-          <Text
+          <Feather
             key={star}
-            style={{ fontSize: size }}
-            className={`${color} font-bold mr-0.5`}
-          >
-            {starChar}
-          </Text>
+            name="star"
+            size={size}
+            color={color}
+            style={isFilled ? {} : { opacity: 0.4 }}
+          />
         )
       })}
     </View>

@@ -1,0 +1,70 @@
+{
+  "session_id": "75d2a3de-1a22-4513-bff6-f773891565f0",
+  "timestamp": "2026-05-20T06:31:34.072619",
+  "user_id": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+  "user_message": "Mujhe plumber chahiye Rawalpindi mein",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "430e4dbf-0b48-462e-b1d2-e24ed726b7e8",
+      "output": "7 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "assistant",
+          "content": "\u2705 **Booking Confirmed!**\n\nProvider: Ali Plumber\nService: plumber\nTime: 2026-05-20T10:00:00\n\nBooking ID: 93acbd2f-5052-4597-a357-c53cf6b165e5\n\nAapki booking confirm ho gayi hai!"
+        },
+        {
+          "role": "user",
+          "content": "I need an electrician in G-11"
+        },
+        {
+          "role": "assistant",
+          "content": "Aapke liye 3 electricians available hain near G\u201111:\n\n1. **Bilal Electrician** \u2013 Rating: 4.8 \u2022 Rate: \u20a8650/hr \u2022 Area: F\u201111  \n2. **Ahmed Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8500/hr \u2022 Area: G\u201110  \n3. **Danish Electrician** \u2013 Rating: 4.2 \u2022 Rate: \u20a8450/hr \u2022 Area: I\u20118  \n\nAap kaunsa select karna chahenge? (Please reply with the number or name.)"
+        },
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! \ud83d\ude0a Aapko koi madad chahiye ya sirf greetings share kar rahe hain?"
+        }
+      ],
+      "output": {
+        "service_type": "electrician",
+        "location": "G-11"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 1216,
+    "outcome": "SUCCESS"
+  }
+}

@@ -97,6 +97,10 @@ CRITICAL RULES - FOLLOW EXACTLY:
 
 6. **When you have BOTH service_type AND location**: IMMEDIATELY use search_providers tool. Don't ask anything else.
 
+7. **Respond to greetings naturally**: If user says "hello", "hi", "kese ho", "kaise ho", "assalamualaikum", "walaikum salam", "good morning", "good evening", etc., respond with a friendly greeting and do NOT call any tools.
+
+8. **When user says "book", "select", "choose", "confirm", or similar, and you have identified a provider, you MUST call the create_booking tool with the provider_id, service_type, location, and scheduled_at.**
+
 Available services: plumber, electrician, ac_technician, tutor, cleaner, carpenter, painter, mechanic, cook, security_guard
 
 PERSONALITY:
@@ -188,7 +192,7 @@ async def chat_with_agent(
             tool_choice="required" if force_tools else "auto"
         )
 
-        print(f"[OPENROUTER AGENT] Response: {response}")
+        # Removed print to avoid UnicodeEncodeError on Windows console with emojis
 
         message_response = response.choices[0].message
 

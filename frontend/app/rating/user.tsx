@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityInd
 import { useLocalSearchParams, router } from 'expo-router'
 import { ratingsAPI } from '../../lib/api'
 import StarRating from '../../components/StarRating'
+import { Feather } from '@expo/vector-icons'
 
 const CUSTOMER_REVIEW_TAGS = [
   'responsive',
@@ -57,7 +58,7 @@ export default function RateCustomerScreen() {
     <ScrollView className="flex-1 bg-gray-950 px-6 py-10" contentContainerStyle={{ justifyContent: 'center' }}>
       <View className="bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-xl shadow-black/40">
         <View className="items-center mb-6">
-          <Text className="text-4xl mb-3">⭐</Text>
+          <Feather name="star" size={40} color="#fbbf24" style={{ marginBottom: 12 }} />
           <Text className="text-white font-extrabold text-xl text-center">Rate Customer Partner</Text>
           <Text className="text-emerald-400 font-extrabold text-base text-center mt-1 pr-2 pl-2">
             {user_name || 'Customer Partner'}
@@ -110,7 +111,7 @@ export default function RateCustomerScreen() {
             numberOfLines={3}
             placeholder="Customer ke baare mein apna tajurba share karein..."
             placeholderTextColor="#6b7280"
-            className="bg-gray-805 text-white bg-gray-800 rounded-xl px-4 py-3 border border-gray-700 focus:border-emerald-500 text-base text-left"
+            className="bg-gray-800 text-white rounded-xl px-4 py-3 border border-gray-700 focus:border-emerald-500 text-base text-left"
           />
           <Text className="text-gray-500 text-right text-xs mt-1 font-bold">{reviewText.length}/200</Text>
         </View>
@@ -120,18 +121,22 @@ export default function RateCustomerScreen() {
           <TouchableOpacity
             onPress={handleSubmitRating}
             disabled={loading}
+            accessibilityRole="button"
+            accessibilityLabel="Submit your rating"
             className="bg-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/20 mb-3"
           >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text className="text-white font-bold text-lg">Rating Submit Karein ⭐</Text>
+              <Text className="text-white font-bold text-lg">Rating Submit Karein</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => router.replace('/(provider)/bookings')}
-            className="border border-gray-800 py-3.5 rounded-xl bg-transparent items-center"
+            accessibilityRole="button"
+            accessibilityLabel="Skip rating and go back to bookings"
+            className="border border-gray-800 py-4 rounded-xl bg-transparent items-center"
           >
             <Text className="text-gray-400 font-bold text-base">Baad mein Rate Karo</Text>
           </TouchableOpacity>

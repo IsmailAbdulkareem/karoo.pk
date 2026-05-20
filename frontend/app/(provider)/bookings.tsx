@@ -125,7 +125,7 @@ export default function ProviderBookingsScreen() {
               className={`flex-1 py-3 rounded-lg items-center ${isActive ? 'bg-emerald-500' : 'bg-transparent'}`}
             >
               <Text className={`font-bold text-xs capitalize ${isActive ? 'text-white' : 'text-gray-400'}`}>
-                {tab === 'confirmed' ? 'Active ✅' : tab}
+                {tab === 'confirmed' ? 'Active' : tab}
               </Text>
             </TouchableOpacity>
           )
@@ -156,7 +156,7 @@ export default function ProviderBookingsScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <EmptyState
-              emoji="📋"
+              icon="clipboard"
               title={
                 activeTab === 'pending'
                   ? 'Koi pending booking nahi'

@@ -82,7 +82,10 @@ export default function BrowseScreen() {
       <View className="px-4 pt-4">
         {/* Search area text input */}
         <View className="mb-4">
-          <Text className="text-white text-base font-semibold mb-2">📍 Search by Area</Text>
+          <View className="flex-row items-center mb-2">
+            <Feather name="map-pin" size={16} color="#10b981" />
+            <Text className="text-white text-base font-semibold ml-2">Search by Area</Text>
+          </View>
           <View className="relative">
             <TextInput
               value={searchArea}
@@ -99,7 +102,10 @@ export default function BrowseScreen() {
 
         {/* Horizontal Service Category Scroll */}
         <View className="mb-5">
-          <Text className="text-white text-base font-semibold mb-3">🔧 Filter by Service</Text>
+          <View className="flex-row items-center mb-3">
+            <Feather name="tool" size={16} color="#10b981" />
+            <Text className="text-white text-base font-semibold ml-2">Filter by Service</Text>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -143,7 +149,7 @@ export default function BrowseScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <EmptyState
-              emoji="🔍"
+              icon="search"
               title="Koi Provider nahi mila"
               subtitle="Hamare pass abhi is selection ke liye koi online aur available provider nahi hai. Dobara check karein."
               buttonText="Reset Filters"

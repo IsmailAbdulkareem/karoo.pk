@@ -30,8 +30,15 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
-    "scheme": "karoo"
+    "scheme": "karoo",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "991061f5-faf9-4cb0-8a9d-116f1c12acd5"
+      }
+    }
   }
 }

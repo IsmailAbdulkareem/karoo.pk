@@ -64,7 +64,7 @@ export default function WorkerProfileScreen() {
         <Text className="text-white text-lg font-bold mb-4">Profile nahi mil saki</Text>
         <TouchableOpacity
           onPress={() => router.back()}
-          className="bg-emerald-505 px-6 py-3 rounded-xl bg-emerald-500"
+          className="bg-emerald-500 px-6 py-3 rounded-xl"
         >
           <Text className="text-white font-bold">Wapas Jaein</Text>
         </TouchableOpacity>
@@ -101,7 +101,7 @@ export default function WorkerProfileScreen() {
               <Text className="text-gray-500 text-[10px] uppercase font-extrabold tracking-wider mb-1">Rating</Text>
               <View className="flex-row items-center">
                 <Text className="text-white font-black text-base mr-1">{provider.rating?.toFixed(1) || '0.0'}</Text>
-                <Text className="text-amber-400 text-base">★</Text>
+                <StarRating rating={provider.rating ?? 0} size={14} />
               </View>
             </View>
 

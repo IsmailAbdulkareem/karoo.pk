@@ -7,7 +7,7 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ message = 'Jaari hai...' }: LoadingScreenProps) {
   return (
-    <View className="flex-1 bg-gray-950 justify-center items-center px-6">
+    <View className="flex-1 bg-gray-950 justify-center items-center px-6" accessibilityLabel={message} accessibilityRole="progressbar">
       <ActivityIndicator size="large" color="#10b981" />
       <Text className="text-gray-400 font-medium text-base mt-4 text-center">
         {message}

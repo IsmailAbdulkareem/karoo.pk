@@ -1,0 +1,86 @@
+{
+  "session_id": "2e4c12b8-514a-48d4-aa76-69b3b721eaa7",
+  "timestamp": "2026-05-20T06:20:30.743040",
+  "user_id": "77197187-e529-4538-b79a-8e1192a74127",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "77197187-e529-4538-b79a-8e1192a74127",
+      "output": "8 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! Kaise ho? \ud83d\ude0a Agar aap ko koi service ya koi specific location chahiye ho to bata dein, main madad kar doonga!"
+        },
+        {
+          "role": "user",
+          "content": "hello"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello again! Kya aapko koi service chahiye \u2013 jaise plumber, electrician, ya koi aur? Aur location bhi bata dein (e.g., G\u201111, DHA, Karachi) taa ke main aapke liye best options dhoond sakun."
+        },
+        {
+          "role": "user",
+          "content": "electrician karachi mein cheye"
+        },
+        {
+          "role": "assistant",
+          "content": "Yeh rahe Karachi ke kuch electrician options (abhi ke liye sirf sample data available hai). Agar aap koi specific area ya budget batayen, ya inmein se koi select karna chahein, toh please let me know! \ud83d\ude0a\n\n1. **Hassan Electrician** \u2013 600 PKR/hr  \n2. **Test Provider 2** \u2013 700 PKR/hr  \n3. **Usman Electrician** \u2013 800 PKR/hr  \n\nAapko kaun sa electrician pasand aaye ya koi aur detail chahiye?"
+        },
+        {
+          "role": "user",
+          "content": "electrician karachi mein cheye"
+        },
+        {
+          "role": "assistant",
+          "content": "**Karachi ke liye electrician options** (abhi ke liye system se milay hue sample data):\n\n| # | Naam | Rate per hour | Availability | Bio |\n|---|------|---------------|--------------|-----|\n| 1 | **Hassan Electrician** | 600 PKR | \u2705 Available | Certified electrician, 24/7 service |\n| 2 | **Test Provider 2** | 700 PKR | \u2705 Available | Expert electrician with 5 years experience |\n| 3 | **Usman Electrician** | 800 PKR | \u2705 Available | Expert electrician with 8 years experience (Rawalpindi base) |\n\nAap inmein se koi select karna chahte hain ya koi specific area/price preference hai? \ud83d\ude03"
+        }
+      ],
+      "output": {
+        "service_type": "electrician",
+        "location": "Karachi"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hi! Kaisa din guzar raha hai aapka? Agar koi service chahiye ya koi sawaal ho toh bata dein! \ud83d\ude0a"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 12816,
+    "outcome": "SUCCESS"
+  }
+}

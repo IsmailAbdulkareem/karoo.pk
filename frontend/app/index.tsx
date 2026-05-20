@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { router } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { storage } from '@/lib/storage';
 
 /**
@@ -35,7 +36,10 @@ export default function IndexScreen() {
   return (
     <ScrollView className="flex-1 bg-gray-950 p-4" contentContainerStyle={{ alignItems: 'center' }}>
       {/* Header */}
-      <Text className="text-5xl font-bold text-emerald-500 mb-2">Karoo 🤝</Text>
+      <View className="flex-row items-center mb-2">
+        <Text className="text-5xl font-bold text-emerald-500">Karoo</Text>
+        <Feather name="handshake" size={36} color="#10b981" style={{ marginLeft: 8 }} />
+      </View>
       <Text className="text-xl text-white mb-1">Pakistan ka AI Service Platform</Text>
       <Text className="text-lg text-gray-400 mb-6">
         Plumber, electrician, AC — sab milenge AI se
@@ -59,15 +63,19 @@ export default function IndexScreen() {
 
       {/* Action Buttons */}
       <TouchableOpacity
-        className="bg-emerald-500 rounded-xl py-3 px-6 mb-4 w-11/12 items-center"
+        className="bg-emerald-500 rounded-xl py-4 px-6 mb-4 w-11/12 items-center"
         onPress={() => router.push('/(auth)/login')}
+        accessibilityRole="button"
+        accessibilityLabel="Find a service, login"
       >
         <Text className="text-white text-lg font-semibold">Service Dhundho</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="bg-emerald-500 rounded-xl py-3 px-6 mb-2 w-11/12 items-center"
+        className="bg-emerald-500 rounded-xl py-4 px-6 mb-2 w-11/12 items-center"
         onPress={() => router.push('/(auth)/register?role=provider')}
+        accessibilityRole="button"
+        accessibilityLabel="Register as provider"
       >
         <Text className="text-white text-lg font-semibold">Provider Hoon</Text>
       </TouchableOpacity>

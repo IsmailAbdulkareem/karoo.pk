@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
-import { router } from 'expo-router'
+import { Feather } from '@expo/vector-icons'
 
 interface NotificationProps {
   id: string
@@ -18,26 +18,25 @@ interface NotificationItemProps {
 }
 
 export default function NotificationItem({ notification, onPress }: NotificationItemProps) {
-  // Get icon and color based on notification type
   const getTypeMetadata = (type: string) => {
     switch (type) {
       case 'booking_created':
-        return { emoji: '📋', bg: 'bg-yellow-500/10' }
+        return { icon: 'clipboard' as const, bg: 'bg-yellow-500/10' }
       case 'booking_accepted':
-        return { emoji: '✅', bg: 'bg-emerald-500/10' }
+        return { icon: 'check-circle' as const, bg: 'bg-emerald-500/10' }
       case 'booking_cancelled':
       case 'booking_rejected':
-        return { emoji: '❌', bg: 'bg-red-500/10' }
+        return { icon: 'x-circle' as const, bg: 'bg-red-500/10' }
       case 'booking_completed':
-        return { emoji: '🏁', bg: 'bg-blue-500/10' }
+        return { icon: 'flag' as const, bg: 'bg-blue-500/10' }
       case 'service_request':
-        return { emoji: '🔔', bg: 'bg-purple-500/10' }
+        return { icon: 'bell' as const, bg: 'bg-purple-500/10' }
       default:
-        return { emoji: '📢', bg: 'bg-gray-500/10' }
+        return { icon: 'bell' as const, bg: 'bg-gray-500/10' }
     }
   }
 
-  const { emoji, bg } = getTypeMetadata(notification.type)
+  const { icon, bg } = getTypeMetadata(notification.type)
 
   const formatTimeAgo = (dateStr: string) => {
     try {
@@ -66,7 +65,7 @@ export default function NotificationItem({ notification, onPress }: Notification
     >
       {/* Icon Circle */}
       <View className={`w-10 h-10 rounded-full ${bg} items-center justify-center mr-3`}>
-        <Text className="text-lg">{emoji}</Text>
+        <Feather name={icon} size={18} color="#9ca3af" />
       </View>
 
       {/* Content */}
@@ -84,7 +83,7 @@ export default function NotificationItem({ notification, onPress }: Notification
 
       {/* Unread indicator */}
       {!notification.is_read && (
-        <View className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+        <View className="w-2.5 h-2.5 rounded-full bg-emerald-500" accessibilityLabel="Unread notification" />
       )}
     </TouchableOpacity>
   )

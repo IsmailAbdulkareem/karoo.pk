@@ -1,0 +1,74 @@
+{
+  "session_id": "1322ac2b-1950-4a96-8a4c-882687b3754c",
+  "timestamp": "2026-05-20T06:40:04.639282",
+  "user_id": "04518e7e-7158-4e33-bf05-f51d3f93e072",
+  "user_message": "hello",
+  "workplan": {
+    "goal": "Handle user booking request via AI agent",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution",
+      "Response"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "04518e7e-7158-4e33-bf05-f51d3f93e072",
+      "output": "5 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Extract Slots",
+      "tool_called": "context_extractor",
+      "input": [
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "user",
+          "content": "Mujhe plumber chahiye Rawalpindi mein"
+        },
+        {
+          "role": "assistant",
+          "content": "\u2705 **Booking Confirmed!**\n\nProvider: Ali Plumber\nService: plumber\nTime: 2026-05-20T10:00:00\n\nBooking ID: 0e930ed2-5a20-4ff8-8409-349ed046920a\n\nAapki booking confirm ho gayi hai!"
+        },
+        {
+          "role": "user",
+          "content": "I need an electrician in G-11"
+        },
+        {
+          "role": "assistant",
+          "content": "Yeh rahe kuch electricians jo aapke aas\u2011paas (G\u201111) available hain:\n\n1. **Bilal Electrician** \u2013 Rating: 4.8, Rate: Rs\u202f650/hr, Area: F\u201111  \n2. **Ahmed Electrician** \u2013 Rating: 4.2, Rate: Rs\u202f500/hr, Area: G\u201110  \n3. **Danish Electrician** \u2013 Rating: 4.2, Rate: Rs\u202f450/hr, Area: I\u20118  \n\nAap kaunse electrician ko book karna chahein ge? (Please let me know the number\u202f1,\u202f2, or\u202f3)."
+        }
+      ],
+      "output": {
+        "service_type": "electrician",
+        "location": "G-11"
+      },
+      "status": "SUCCESS",
+      "time_ms": 50
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hello",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Hello! \ud83d\ude4c Aapko koi madad chahiye ya sirf chit\u2011chat karna chahte hain?"
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_time_ms": 7406,
+    "outcome": "SUCCESS"
+  }
+}

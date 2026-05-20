@@ -74,7 +74,10 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
         {match_score !== undefined && (
           <View className="mb-3 bg-gray-800/50 p-3 rounded-xl border border-emerald-500/10">
             <View className="flex-row justify-between items-center mb-2">
-              <Text className="text-gray-400 text-xs font-semibold">🎯 AI Match Score</Text>
+              <View className="flex-row items-center">
+                <Feather name="target" size={12} color="#9ca3af" style={{ marginRight: 4 }} />
+                <Text className="text-gray-400 text-xs font-semibold">AI Match Score</Text>
+              </View>
               <Text className="text-emerald-400 text-sm font-bold">{Math.round(match_score * 100)}%</Text>
             </View>
             <View className="w-full bg-gray-700 h-2.5 rounded-full overflow-hidden">
@@ -91,12 +94,17 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
           <View className="mb-3 bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 p-3 rounded-xl border border-emerald-500/30">
             <View className="flex-row justify-between items-center">
               <View>
-                <Text className="text-gray-400 text-xs font-semibold mb-1">💰 Estimated Price</Text>
+                <View className="flex-row items-center mb-1">
+                  <Feather name="dollar-sign" size={12} color="#9ca3af" style={{ marginRight: 4 }} />
+                  <Text className="text-gray-400 text-xs font-semibold">Estimated Price</Text>
+                </View>
                 <Text className="text-white text-2xl font-bold">Rs. {provider.estimated_price}</Text>
               </View>
               {provider.price_breakdown && (
                 <TouchableOpacity
                   onPress={() => setShowPriceModal(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="View price breakdown"
                   className="bg-emerald-500/20 px-3 py-2 rounded-lg border border-emerald-500/30"
                 >
                   <Text className="text-emerald-400 text-xs font-semibold">View Breakdown</Text>
@@ -109,7 +117,10 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
         {/* Info grid */}
         <View className="bg-gray-800/30 rounded-xl p-3 border border-gray-700/50 flex-row flex-wrap justify-between mb-3">
           <View className="w-[48%] mb-2">
-            <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">⭐ Rating</Text>
+            <View className="flex-row items-center mb-1">
+              <Feather name="star" size={10} color="#6b7280" style={{ marginRight: 3 }} />
+              <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">Rating</Text>
+            </View>
             <View className="flex-row items-center">
               <StarRating rating={provider.rating ?? 0} size={14} />
               <Text className="text-white text-sm font-bold ml-2">{provider.rating?.toFixed(1) ?? '0.0'}</Text>
@@ -117,20 +128,29 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
           </View>
 
           <View className="w-[48%] mb-2">
-            <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">💵 Rate</Text>
+            <View className="flex-row items-center mb-1">
+              <Feather name="dollar-sign" size={10} color="#6b7280" style={{ marginRight: 3 }} />
+              <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">Rate</Text>
+            </View>
             <Text className="text-white text-sm font-bold">Rs. {provider.rate_per_hour ?? 'N/A'}/hr</Text>
           </View>
 
           {provider.area && (
             <View className="w-[48%]">
-              <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">📍 Area</Text>
+              <View className="flex-row items-center mb-1">
+                <Feather name="map-pin" size={10} color="#6b7280" style={{ marginRight: 3 }} />
+                <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">Area</Text>
+              </View>
               <Text className="text-white text-sm font-bold" numberOfLines={1}>{provider.area}</Text>
             </View>
           )}
 
           {provider.eta_minutes !== undefined && (
             <View className="w-[48%]">
-              <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">🚗 ETA</Text>
+              <View className="flex-row items-center mb-1">
+                <Feather name="clock" size={10} color="#6b7280" style={{ marginRight: 3 }} />
+                <Text className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">ETA</Text>
+              </View>
               <Text className="text-emerald-400 text-sm font-bold">{provider.eta_minutes} min</Text>
             </View>
           )}
@@ -141,7 +161,9 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
           <View className="flex-row gap-2">
             <TouchableOpacity
               onPress={() => router.push(`/worker/${provider.id}`)}
-              className="flex-1 border border-gray-600 py-3 rounded-xl items-center bg-gray-800/50"
+              accessibilityRole="button"
+              accessibilityLabel={`View ${provider.name} profile`}
+              className="flex-1 border border-gray-600 py-4 rounded-xl items-center bg-gray-800/50"
             >
               <Text className="text-gray-300 font-semibold text-sm">View Profile</Text>
             </TouchableOpacity>
@@ -163,9 +185,11 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
                   },
                 })
               }}
-              className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 py-3 rounded-xl items-center shadow-lg shadow-emerald-500/30"
+              accessibilityRole="button"
+              accessibilityLabel={`Book ${provider.name} now`}
+              className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 py-4 rounded-xl items-center shadow-lg shadow-emerald-500/30"
             >
-              <Text className="text-white font-bold text-sm">Book Now 🚀</Text>
+              <Text className="text-white font-bold text-sm">Book Now</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -186,7 +210,10 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
           >
             <TouchableOpacity activeOpacity={1} className="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-emerald-500/30">
               <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-white text-xl font-bold">💰 Price Breakdown</Text>
+                <View className="flex-row items-center">
+                  <Feather name="dollar-sign" size={20} color="#10b981" style={{ marginRight: 6 }} />
+                  <Text className="text-white text-xl font-bold">Price Breakdown</Text>
+                </View>
                 <TouchableOpacity onPress={() => setShowPriceModal(false)}>
                   <Feather name="x" size={24} color="#10b981" />
                 </TouchableOpacity>
@@ -200,7 +227,7 @@ export default function ProviderCard({ provider, hideActions = false, match_scor
 
               <View className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/30">
                 <Text className="text-emerald-400 text-xs text-center">
-                  ✨ Transparent pricing powered by AI
+                  Transparent pricing powered by AI
                 </Text>
               </View>
             </TouchableOpacity>

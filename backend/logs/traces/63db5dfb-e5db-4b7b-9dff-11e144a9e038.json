@@ -1,0 +1,41 @@
+{
+  "session_id": "63db5dfb-e5db-4b7b-9dff-11e144a9e038",
+  "timestamp": "2026-05-20T06:16:31.984970",
+  "user_id": "b89916c6-3f40-49ca-b096-b8bcef46c944",
+  "user_message": "hi",
+  "workplan": {
+    "goal": "Provider natural language query",
+    "steps_planned": [
+      "Get Context",
+      "Agent Processing",
+      "Tool Execution"
+    ]
+  },
+  "steps_executed": [
+    {
+      "name": "Fetch Context",
+      "tool_called": "get_history",
+      "input": "b89916c6-3f40-49ca-b096-b8bcef46c944",
+      "output": "2 messages",
+      "status": "SUCCESS",
+      "time_ms": 100
+    },
+    {
+      "name": "Agent Processing",
+      "tool_called": "karoo_agent",
+      "input": "hi",
+      "output": {
+        "needs_tool_execution": false,
+        "tool_calls": [],
+        "reply": "Maaf kijiye, kuch masla aa gaya. Dobara try karein."
+      },
+      "status": "SUCCESS",
+      "time_ms": 800
+    }
+  ],
+  "summary": {
+    "total_steps": 2,
+    "total_time_ms": 9048,
+    "outcome": "SUCCESS"
+  }
+}
